@@ -2,7 +2,9 @@
 sidebar_position: 4
 ---
 
-# Binding with non-podSpec-based application
+# Binding with non-podSpec-based application 
+
+<kbd>TBU</kbd>
 
 If your application is to be deployed as a non-podSPec-based workload such that the containers path should bind at a custom location, the `ServiceBinding` API provides an API to achieve that.
 

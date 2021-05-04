@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Custom Injection
+# Custom Path Injection
 
 ## Containers Path
 
@@ -127,6 +127,9 @@ metadata:
 spec:
     secret: binding-request-72ddc0c540ab3a290e138726940591debf14c581
 ```
+
+## Inject intermediate binding secret reference into a custom location inside application resource
+
 
 
 
