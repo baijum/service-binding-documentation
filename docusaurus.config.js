@@ -2,13 +2,13 @@
 module.exports = {
   title: 'My Site',
   tagline: 'Dinosaurs are cool',
-  url: 'https://your-docusaurus-test-site.com',
-  baseUrl: '/',
+  url: 'https://slemeur.github.io',
+  baseUrl: '/service-binding-documentation/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'slemeur', // Usually your GitHub org/user name.
+  projectName: 'service-binding-documentation', // Usually your repo name.
   themeConfig: {
     navbar: {
       title: 'Service Bindings',
