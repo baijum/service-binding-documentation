@@ -6,7 +6,7 @@ module.exports = {
   baseUrl: '/service-binding-documentation/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.png',
   organizationName: 'slemeur', // Usually your GitHub org/user name.
   projectName: 'service-binding-documentation', // Usually your repo name.
   themeConfig: {
