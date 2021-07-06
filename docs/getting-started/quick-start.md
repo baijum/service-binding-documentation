@@ -224,6 +224,9 @@ spec:
       containers:
         - name: application
           image: quay.io/<username>/spring-petclinic-rest:latest
+          env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: postgresql,spring-data-jpa
           ports:
           - name: http
             containerPort: 9966
