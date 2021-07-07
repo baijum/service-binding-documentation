@@ -9,24 +9,9 @@ play around.  As part of this exercise, a backing service and an application is
 required.  The backing service is a PostgreSQL database and application is a
 [Spring Boot REST API server][petclinic].
 
-## Installing Operator Lifecycle Manager (OLM)
-
-To install [Operator Lifecycle Manager][olm], run this command:
-
-```
-curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.2/install.sh | bash -s v0.18.2
-```
-
-Alternately, if you have have [Operator SDK][operator-sdk] installed, run this
-command:
-
-```
-operator-sdk olm install --version=v0.18.2
-```
-
 ## Installing Crunchy PostgreSQL for Kubernetes Opeator
 
-Crunchy PostgreSQL for Kubernetes opeator can be installed with this command:
+[Crunchy PostgreSQL][crunchy] for Kubernetes opeator can be installed with this command:
 
 ```
 kubectl create -f https://operatorhub.io/install/postgresql.yaml
@@ -231,7 +216,8 @@ quay.io, make it as a public image to continue with this quick start.
 
 ## Application Deployment
 
-Now you can deploy your app with this `Deployment` configuration:
+Now you can deploy the `spring-petclinic-rest` app with this `Deployment`
+configuration:
 
 ```
 apiVersion: apps/v1
@@ -293,7 +279,7 @@ stringData:
   password: "LY)Bng@yWceQ70O@VX@AlO(:"
 ```
 
-Now it's ready to create the ServiceBinding custom resource:
+Now you cab create the ServiceBinding custom resource:
 
 ```
 apiVersion: binding.operators.coreos.com/v1alpha1
@@ -319,12 +305,13 @@ You can port-forward the application port and access it from your local system
 kubectl port-forward svc/spring-petclinic-rest 9966:80 -n my-postgresql
 ```
 
-You can open http://localhost:9966/petclinic
+You can open [http://localhost:9966/petclinic](http://localhost:9966/petclinic)
 
 You should see a [Swagger UI][swagger] where you can play with the API.
 
 [petclinic]: https://github.com/spring-petclinic/spring-petclinic-rest
 [olm]: https://olm.operatorframework.io
+[crunchy]: https://operatorhub.io/operator/postgresql
 [operator-sdk]: https://sdk.operatorframework.io
 [pack]: https://buildpacks.io/docs/tools/pack/
 [swagger]: https://swagger.io
