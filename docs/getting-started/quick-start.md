@@ -220,6 +220,7 @@ Now you can deploy the `spring-petclinic-rest` app with this `Deployment`
 configuration:
 
 ```
+cat <<-EOF > "app-deployment.yaml"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -245,11 +246,15 @@ spec:
           ports:
           - name: http
             containerPort: 9966
+EOF
+
+kubectl apply -f "app-deployment.yaml"
 ```
 
 You can also create a `Service`:
 
 ```
+cat <<-EOF > "app-service.yaml"
 apiVersion: v1
 kind: Service
 metadata:
@@ -260,11 +265,15 @@ spec:
     targetPort: 9966
   selector:
     app: spring-petclinic-rest
+EOF
+
+kubectl apply -f "app-service.yaml"
 ```
 
 You can create the Secret resource based on the database created earlier:
 
 ```
+cat <<-EOF > "database-secret.yaml"
 apiVersion: v1
 kind: Secret
 metadata:
@@ -277,11 +286,15 @@ stringData:
   database: "hippo"
   username: "hippo"
   password: "LY)Bng@yWceQ70O@VX@AlO(:"
+EOF
+
+kubectl apply -f "database-secret.yaml"
 ```
 
 Now you cab create the ServiceBinding custom resource:
 
 ```
+cat <<-EOF > "spring-petclinic-rest-binding.yaml"
 apiVersion: binding.operators.coreos.com/v1alpha1
 kind: ServiceBinding
 metadata:
@@ -297,6 +310,9 @@ spec:
       group: apps
       version: v1
       resource: deployments
+EOF
+
+kubectl apply -f "spring-petclinic-rest-binding.yaml"
 ```
 
 You can port-forward the application port and access it from your local system
