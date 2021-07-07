@@ -167,28 +167,57 @@ psql -h localhost -U "${pgo_cluster_username}" "${pgo_cluster_name}" -f populate
 
 ## Building the PetClinic App
 
-Create a directory with files required for database connection.  The values need
-not be correct as it will be projected through Service Binding:
+The application should be prepared to use the bindings projected into the
+container.  This section explains how to use [Cloud Native
+Buildpacks](https://buildpacks.io) and [Spring Cloud
+Bindings](https://github.com/spring-cloud/spring-cloud-bindings) Java library to
+prepare a _Spring Boot_ application to consume the bindings.
+
+_Cloud Native Buildpacks_ transform your application source code into [OCI
+images](https://github.com/opencontainers/image-spec/blob/master/spec.md) that
+can run on any cloud.  The [Paketo Spring Boot
+Buildpack](https://github.com/paketo-buildpacks/spring-boot) is a _Cloud Native
+Buildpack_ that helps to contribute _Spring Cloud Bindings_ as an application
+dependency.
+
+The _Spring Cloud Bindings_ library enable automatic _Spring Boot_ configuration
+based on the `org.springframework.cloud.bindings.boot.enable` system property.
+The [Paketo
+buildpacks](https://paketo.io/docs/reference/configuration/#bindings) sets this
+property value to `true` if the bindings exists in the `/platform/bindings`
+directory at build-time.  The name of the sub-directory is considered as the
+name of the binding.  Within each directory, there should be a file named `type`
+with the name of the type of binding.  You can see the list of supported types
+in the [Spring Cloud Bindings
+README](https://github.com/spring-cloud/spring-cloud-bindings#auto-configurations).
+
+For example, if you want to build the [PetClinic REST
+server](https://github.com/spring-petclinic/spring-petclinic-rest) sample
+application with PostgreSQL backend, create a directory with a file named `type`
+like this:
 
 ```
 mkdir /tmp/postgres
-cd /tmp/postgres
-touch database  host  password  port  type  username
+echo "postgresql" > /tmp/postgres
 ```
 
-Clone the PetClinic repository:
+Now you can build the application image like this:
 
 ```
-git clone https://github.com/spring-petclinic/spring-petclinic-rest.git
+git clone https://github.com/spring-petclinic/spring-petclinic-rest
+cd spring-petclinic-rest
+pack build --path . --builder paketobuildpacks/builder:base\
+--volume /tmp/postgres:/platform/bindings/postgres spring-petclinic-rest
 ```
 
-Note: The above fork of PetClinic was choosen as it has PostgreSQL support
+The Paketo Buildpacks will look for bindings in `$SERVICE_BINDING_ROOT` at
+runtime.  If an implementation of [Service Binding
+Specification](https://github.com/k8s-service-bindings/spec) for Kubernetes
+project the bindings, your Spring Boot Application should connect to PostgreSQL
+database.
 
-You need [Build Packs CLI][pack] to build the container image.
-
-```
-pack build --path . --builder paketobuildpacks/builder:base --volume /tmp/postgres:/platform/bindings/postgres spring-petclinic-rest
-```
+Note: For the above application, you need to set the active spring profile
+`postgres,spring-data-jpa`.
 
 Now you can create a tag of the image and push to quay.io:
 
