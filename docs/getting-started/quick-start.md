@@ -37,7 +37,7 @@ hippo-backrest-shared-repo-66ddc6cf77-sjgqp   1/1     Running   0          4m27s
 Now you can initialize the database:
 
 ```
-kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/093f3ef729d7eb26c3f461c77b0089bd7c358e49/app-deployment.sh
+bash <(curl -s https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/603e288541dbd1d55596ca1b520d7f2a4f1ce76b/init-database.sh)>
 ```
 
 ## Application Deployment
@@ -46,7 +46,7 @@ Now you can deploy the `spring-petclinic-rest` app with this `Deployment`
 configuration:
 
 ```
-bash <(curl -s https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/603e288541dbd1d55596ca1b520d7f2a4f1ce76b/app-deployment.sh)
+kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/093f3ef729d7eb26c3f461c77b0089bd7c358e49/app-deployment.sh
 ```
 
 Now you cab create the ServiceBinding custom resource:
