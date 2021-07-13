@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Quick Start
 
-In this quik start, you will see a sample application that you can deploy and
+In this quick start, you will see a sample application that you can deploy and
 use to play around.  As part of this exercise, a backing service and an
 application is required.  The backing service is a PostgreSQL database and
 application is a [Spring Boot REST API server][petclinic].
@@ -12,8 +12,7 @@ application is a [Spring Boot REST API server][petclinic].
 ## Database Backend
 
 You can install [Crunchy PostgreSQL from OperatorHub.io][crunchy].  After the
-installation, to create a PostgreSQL cluster, download this shell script and run
-it:
+installation, to create a PostgreSQL cluster, run this command:
 
 ```
 kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/093f3ef729d7eb26c3f461c77b0089bd7c358e49/pgcluster.sh
@@ -34,7 +33,7 @@ hippo-597dd64d66-4ztww                        1/1     Running   0          3m33s
 hippo-backrest-shared-repo-66ddc6cf77-sjgqp   1/1     Running   0          4m27s
 ```
 
-Now you can initialize the database:
+Now you can initialize the database with this command:
 
 ```
 bash <(curl -s https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/603e288541dbd1d55596ca1b520d7f2a4f1ce76b/init-database.sh)>
@@ -51,7 +50,7 @@ kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10
 
 ## Service Binding
 
-Now you cab create the ServiceBinding custom resource:
+Now you can create the ServiceBinding custom resource:
 
 ```
 cat <<-EOF > "spring-petclinic-rest-binding.yaml"
