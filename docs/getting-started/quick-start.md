@@ -9,7 +9,7 @@ use to play around.  As part of this exercise, a backing service and an
 application is required.  The backing service is a PostgreSQL database and
 application is a [Spring Boot REST API server][petclinic].
 
-## Creating a PostgreSQL Cluster using a Custom Resource
+## Database Backend
 
 You can install [Crunchy PostgreSQL from OperatorHub.io][crunchy].  After the
 installation, to create a PostgreSQL cluster, download this shell script and run
@@ -48,6 +48,8 @@ configuration:
 ```
 kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/093f3ef729d7eb26c3f461c77b0089bd7c358e49/app-deployment.sh
 ```
+
+## Service Binding
 
 Now you cab create the ServiceBinding custom resource:
 
