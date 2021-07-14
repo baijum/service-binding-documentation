@@ -57,7 +57,7 @@ apiVersion: binding.operators.coreos.com/v1alpha1
 kind: ServiceBinding
 metadata:
     name: spring-petclinic-rest
-	namespace: petclinic-demo
+    namespace: petclinic-demo
 spec:
     services:
     - group: "crunchydata.com"
