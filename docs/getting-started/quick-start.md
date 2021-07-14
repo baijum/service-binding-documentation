@@ -14,14 +14,14 @@ application is a [Spring Boot REST API server][petclinic].
 You can install [Crunchy PostgreSQL from OperatorHub.io][crunchy].  After the
 installation, to create a PostgreSQL cluster, run this command:
 
-```
-kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/093f3ef729d7eb26c3f461c77b0089bd7c358e49/pgcluster.sh
+```bash
+kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/pgcluster.yaml
 ```
 
-Ensure all the pods in `my-postgresql` is running (it will take few minutes):
+Ensure all the pods in `petclinic-demo` is running (it will take few minutes):
 
-```
-kubectl get pod -n my-postgresql
+```bash
+kubectl get pod -n petclinic-demo
 ```
 
 You should see output something like this:
@@ -35,8 +35,8 @@ hippo-backrest-shared-repo-66ddc6cf77-sjgqp   1/1     Running   0          4m27s
 
 Now you can initialize the database with this command:
 
-```
-bash <(curl -s https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/603e288541dbd1d55596ca1b520d7f2a4f1ce76b/init-database.sh)>
+```bash
+bash <(curl -s https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/init-database.sh)>
 ```
 
 ## Application Deployment
@@ -44,21 +44,20 @@ bash <(curl -s https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc
 Now you can deploy the `spring-petclinic-rest` app with this `Deployment`
 configuration:
 
-```
-kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/093f3ef729d7eb26c3f461c77b0089bd7c358e49/app-deployment.sh
+```bash
+kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/app-deployment.yaml
 ```
 
 ## Service Binding
 
 Now you can create the ServiceBinding custom resource:
 
-```
-cat <<-EOF > "spring-petclinic-rest-binding.yaml"
+```yaml
 apiVersion: binding.operators.coreos.com/v1alpha1
 kind: ServiceBinding
 metadata:
     name: spring-petclinic-rest
-	namespace: my-postgresql
+	namespace: petclinic-demo
 spec:
     services:
     - group: "crunchydata.com"
@@ -77,15 +76,19 @@ spec:
     mappings:
     - name: type
       value: "postgresql"
-EOF
-
-kubectl apply -f "spring-petclinic-rest-binding.yaml"
 ```
+
+For the convenience, the above configuration can be installed like this:
+
+```bash
+kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/service-binding.yaml
+```
+
 
 You can port-forward the application port and access it from your local system
 
 ```
-kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n my-postgresql
+kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n petclinic-demo
 ```
 
 You can open [http://localhost:9966/petclinic](http://localhost:9966/petclinic)
