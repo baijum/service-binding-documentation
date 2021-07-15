@@ -40,4 +40,20 @@ spec:
     name: prod-account-service
 ```
 
+With spec compliant API:
+
+```
+apiVersion: service.binding/v1alpha2
+kind: ServiceBinding
+metadata:
+  name: account-service
+
+spec:
+  ...
+  service:
+    apiVersion: example.com/v1alpha1
+    kind: AccountService
+    name: prod-account-service
+```
+
 [provisioned-service]: https://github.com/k8s-service-bindings/spec#provisioned-service

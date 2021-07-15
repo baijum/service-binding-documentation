@@ -8,7 +8,7 @@ sidebar_position: 3
 service by using Secret as a reference.  This is useful when there is no
 Provisioned Service available.
 
-Here is an example:
+Here is an example usage:
 
 ```
 apiVersion: binding.operators.coreos.com/v1alpha1
@@ -20,6 +20,22 @@ spec:
   services:
   - group: ""
     version: v1
+    kind: Secret
+    name: production-db-secret
+```
+
+With spec compliant API:
+
+```
+apiVersion: service.binding/v1alpha2
+kind: ServiceBinding
+metadata:
+  name: account-service
+
+spec:
+  ...
+  service:
+    apiVersion: v1
     kind: Secret
     name: production-db-secret
 ```
