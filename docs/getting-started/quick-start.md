@@ -114,6 +114,8 @@ For the convenience, the above configuration can be installed like this:
 kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/service-binding.yaml
 ```
 
+The [next section](../creating-service-bindings/creating-service-binding)
+explains the ServiceBinding configuration.
 
 You can port-forward the application port and access it from your local system
 
