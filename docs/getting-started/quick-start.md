@@ -9,10 +9,35 @@ use to play around.  As part of this exercise, a backing service and an
 application is required.  The backing service is a PostgreSQL database and
 application is a [Spring Boot REST API server][petclinic].
 
+Here is a schematic diagram of this setup:
+
+![postgresql-spring-boot](/img/docs/postgresql-spring-boot.png)
+
+The service binding operator will collect backing service configuration required
+for connectivity and expose it to the applications.  If service binding operator
+is not present, the applications admin should extract all the configuration
+details and create a Secret resource and expose it to the application through
+volume mount in Kubernetes.
+
+## Prerequisites
+
+Ensure you have installed and configured these:
+
+- Kubernetes cluster (Use [minikube](https://minikube.sigs.k8s.io/) or
+  [kind](https://kind.sigs.k8s.io/) locally)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+- [Service Binding Operator](installing-service-binding).
+
 ## Database Backend
 
-You can install [Crunchy PostgreSQL from OperatorHub.io][crunchy].  After the
-installation, to create a PostgreSQL cluster, run this command:
+The application is going to connect to a PostgreSQL database backend.  The
+PostgreSQL can be setup using the [Crunchy PostgreSQL operator from
+OperatorHub.io][crunchy].
+
+The installation of the operator doesn't create a database instance for
+connection.  To create a database instance, you need to create custom resource
+(`Pgcluster`) and that will trigger the operator reconciliation.  For
+convenience, run this command to create `Pgcluster` custom resource:
 
 ```bash
 kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/pgcluster.yaml
@@ -33,11 +58,16 @@ hippo-597dd64d66-4ztww                        1/1     Running   0          3m33s
 hippo-backrest-shared-repo-66ddc6cf77-sjgqp   1/1     Running   0          4m27s
 ```
 
-Now you can initialize the database with this command:
+The database will be empty by default, it requires the schema and sample data to
+work with the application.  Now you can initialize the database with the schema
+and sample data using this command:
 
 ```bash
 bash <(curl -s https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/init-database.sh)>
 ```
+
+Now the database is ready to connect from application.  The next section
+explains how to configure application:
 
 ## Application Deployment
 
