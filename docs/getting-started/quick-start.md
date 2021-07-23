@@ -14,10 +14,7 @@ Here is a schematic diagram of this setup:
 ![postgresql-spring-boot](/img/docs/postgresql-spring-boot.png)
 
 The service binding operator will collect backing service configuration required
-for connectivity and expose it to the applications.  If service binding operator
-is not present, the applications admin should extract all the configuration
-details and create a Secret resource and expose it to the application through
-volume mount in Kubernetes.
+for connectivity and expose it to the applications.
 
 ## Prerequisites
 
@@ -141,6 +138,14 @@ kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n petc
 You can open [http://localhost:9966/petclinic](http://localhost:9966/petclinic)
 
 You should see a [Swagger UI][swagger] where you can play with the API.
+
+## Summary
+
+The service binding operator will collect backing service configuration required
+for connectivity and expose it to the applications.  If service binding operator
+is not present, the applications admin weill be required to extract all the
+configuration details and create a Secret resource and expose it to the
+application through volume mount in Kubernetes.
 
 [petclinic]: https://github.com/spring-petclinic/spring-petclinic-rest
 [olm]: https://olm.operatorframework.io
