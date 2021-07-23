@@ -78,9 +78,24 @@ configuration:
 kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/app-deployment.yaml
 ```
 
+You can port-forward the application port and try to access it from your local system
+
+```
+kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n petclinic-demo
+```
+
+You can open [http://localhost:9966/petclinic](http://localhost:9966/petclinic)
+
+You should see a [Swagger UI][swagger] where you can play with the API.
+
+Since the binding is not present in the application, you will see be any values in results.
+In the next section, you will see how to fix it.
+
 ## Service Binding
 
-Now you can create the ServiceBinding custom resource:
+The application was not working as the bindings were not present in the app.
+
+Now you can create the ServiceBinding custom resource to inject the bindings:
 
 ```yaml
 apiVersion: binding.operators.coreos.com/v1alpha1
@@ -108,7 +123,7 @@ spec:
       value: "postgresql"
 ```
 
-For the convenience, the above configuration can be installed like this:
+For the convenience, the above resource can be installed like this:
 
 ```bash
 kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/service-binding.yaml

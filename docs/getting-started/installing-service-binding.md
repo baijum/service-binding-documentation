@@ -6,8 +6,8 @@ sidebar_position: 1
 
 The Service Binding Operator can be installed on the following version of Kubernetes and OpenShift.
 
-- Kubernetes version 1.20 or above.
-- OpenShift version 4.7 or above.
+- Kubernetes version 1.19 or above.
+- OpenShift version 4.6 or above.
 
 ## Installing Operator using OLM
 
@@ -17,7 +17,7 @@ see the installation steps, click on the blue _Install_ button.
 
 ## Installing Operator without OLM
 
-If you don't have OLM, you can install the operator using the released configuration:
+If you don't have OLM, you can install the operator using the released resources:
 
 ```
 kubectl apply -f https://github.com/redhat-developer/service-binding-operator/releases/latest/download/release.yaml
