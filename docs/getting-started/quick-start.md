@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Quick Start
+# Quick start
 
 In this quick start, you will see a sample application that you can deploy and
 use to play around.  As part of this exercise, a backing service and an
@@ -14,25 +14,34 @@ Here is a schematic diagram of this setup:
 ![postgresql-spring-boot](/img/docs/postgresql-spring-boot.png)
 
 The service binding operator will collect backing service configuration required
-for connectivity and expose it to the applications.
+for the connectivity and expose it to the sample application.
+
+This topic provides the following information on how to deploy application and connect it to a a backing service:
+
+1. [Prerequisites](#prerequisites)
+2. [Creating a database instance](#creating-a-database-instance)
+3. [Deploying an application](#deploying-an-application)
+4. [Connecting the application to a backing service](#connecting-the-application-to-a-backing-service)
 
 ## Prerequisites
 
-Ensure you have installed and configured these:
+The following components must be installed and configured:
 
-- Kubernetes cluster (Use [minikube](https://minikube.sigs.k8s.io/) or
-  [kind](https://kind.sigs.k8s.io/) locally)
+- Kubernetes cluster (**Note:** You can use [minikube](https://minikube.sigs.k8s.io/) or
+  [kind](https://kind.sigs.k8s.io/), locally)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 - [Service Binding Operator](installing-service-binding).
 
-## Database Backend
+## Creating a database instance
 
 The application is going to connect to a PostgreSQL database backend.  The
 PostgreSQL can be setup using the [Crunchy PostgreSQL operator from
 OperatorHub.io][crunchy].
 
 The installation of the operator doesn't create a database instance for
-connection.  To create a database instance, you need to create custom resource
+connection.
+
+1. To create a database instance, you need to create custom resource
 (`Pgcluster`) and that will trigger the operator reconciliation.  For
 convenience, run this command to create `Pgcluster` custom resource:
 
@@ -40,10 +49,10 @@ convenience, run this command to create `Pgcluster` custom resource:
 kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/pgcluster.yaml
 ```
 
-Ensure all the pods in `petclinic-demo` is running (it will take few minutes):
+2. Ensure all the pods in `my-postgresql` is running (it will take few minutes):
 
 ```bash
-kubectl get pod -n petclinic-demo
+kubectl get pod -n my-postgresql
 ```
 
 You should see output something like this:
@@ -56,8 +65,10 @@ hippo-backrest-shared-repo-66ddc6cf77-sjgqp   1/1     Running   0          4m27s
 ```
 
 The database will be empty by default, it requires the schema and sample data to
-work with the application.  Now you can initialize the database with the schema
-and sample data using this command:
+work with the application.
+
+3. You can initialize the database with the schema and sample data using this
+command:
 
 ```bash
 bash <(curl -s https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/init-database.sh)>
@@ -66,40 +77,39 @@ bash <(curl -s https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/r
 Now the database is ready to connect from application.  The next section
 explains how to configure application:
 
-## Application Deployment
+## Deploying an application
 
-Now you can deploy the `spring-petclinic-rest` app with this `Deployment`
-configuration:
+1. Deploy the `spring-petclinic-rest` app with this `Deployment` configuration:
 
 ```bash
 kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/app-deployment.yaml
 ```
 
-You can port-forward the application port and try to access it from your local system
+2. Port forward the application port and try to access it from your local system
 
 ```
-kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n petclinic-demo
+kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n my-postgresql
 ```
 
-You can open [http://localhost:9966/petclinic](http://localhost:9966/petclinic)
+3. open [http://localhost:9966/petclinic](http://localhost:9966/petclinic)
 
 You should see a [Swagger UI][swagger] where you can play with the API.
 
-Since the binding is not present in the application, you will see be any values in results.
-In the next section, you will see how to fix it.
+Since the binding is not present in the application, you will not see be any
+values in results.  In the next section, you will see how to fix it.
 
-## Service Binding
+## Connecting the application to a backing service
 
 The application was not working as the bindings were not present in the app.
 
-Now you can create the ServiceBinding custom resource to inject the bindings:
+1. Create the ServiceBinding custom resource to inject the bindings:
 
 ```yaml
 apiVersion: binding.operators.coreos.com/v1alpha1
 kind: ServiceBinding
 metadata:
     name: spring-petclinic-rest
-    namespace: petclinic-demo
+    namespace: my-postgresql
 spec:
     services:
     - group: "crunchydata.com"
@@ -129,13 +139,13 @@ kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10
 The [next section](../creating-service-bindings/creating-service-binding)
 explains the ServiceBinding configuration.
 
-You can port-forward the application port and access it from your local system
+2. Port forward the application port and access it from your local system
 
 ```
-kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n petclinic-demo
+kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n my-postgresql
 ```
 
-You can open [http://localhost:9966/petclinic](http://localhost:9966/petclinic)
+3. Open [http://localhost:9966/petclinic](http://localhost:9966/petclinic)
 
 You should see a [Swagger UI][swagger] where you can play with the API.
 
