@@ -151,11 +151,11 @@ You should see a [Swagger UI][swagger] where you can play with the API.
 
 ## Summary
 
-The service binding operator will collect backing service configuration required
-for connectivity and expose it to the applications.  If service binding operator
-is not present, the applications admin weill be required to extract all the
-configuration details and create a Secret resource and expose it to the
-application through volume mount in Kubernetes.
+The Service Binding operator collects the backing service configuration required
+for connectivity and exposes it to the applications.  Suppose the Service
+Binding operator is not present.  In that case, the application's admin needs to
+extract all the configuration details and create a Secret resource and expose it
+to the application through volume mount in Kubernetes.
 
 [petclinic]: https://github.com/spring-petclinic/spring-petclinic-rest
 [olm]: https://olm.operatorframework.io
