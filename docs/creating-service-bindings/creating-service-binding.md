@@ -20,8 +20,8 @@ You also required the application ready to create the ServiceBinding resource.
 There are two APIs supported by the Service Binding Operator.  Both has
 `ServiceBinding` as the same name for the kind.  But the API group is different.
 
-1. binding.operators.coreos.com - This API will be removed in future.
-2. service.binding - This API will be supported, but the API group name will be changed in future.
+1. binding.operators.coreos.com
+2. service.binding
 
 Here is the example configuration with `binding.operators.coreos.com` API group:
 
