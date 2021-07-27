@@ -8,10 +8,10 @@ The bindings could injected as files or enviroment variables. By default
 bindings are injected as files.  To inject enviroment variable, set
 `.spec.bindAsFiles` value to `false`.
 
-For determining the folder where bindings should be injected, youo can specify
-the destination using `.spec.mountPath` or you can use `SERVICE_BINDING_ROOT`
-environment variable.  If both are set then the `SERVICE_BINDING_ROOT`
-environment variable takes the higher precedence.
+For determining the folder where bindings should be injected, you can specify
+the destination using `.spec.mountPath` or you can set `SERVICE_BINDING_ROOT`
+environment variable in the application resource.  If both are set then the
+`SERVICE_BINDING_ROOT` environment variable takes the higher precedence.
 
 The following table summarizes how the final bind path is computed:
 
@@ -35,6 +35,25 @@ framework specific programs:
 5. JS/Node: https://github.com/nodeshift/kube-service-bindings
 
 Note: All these libraries expect `SERVICE_BINDING_ROOT` set.
+
+Here is example Python client usage:
+
+```
+from pyservicebinding import binding
+try:
+    sb = binding.ServiceBinding()
+except binding.ServiceBindingRootMissingError as msg:
+    # log the error message and retry/exit
+    print("SERVICE_BINDING_ROOT env var not set")
+
+sb = binding.ServiceBinding()
+
+bindings_list = sb.bindings("postgresql")
+```
+
+In the above example, the `bindings_list` contains bindings for `postgresql`
+type.  For full API, see the
+[documentation](https://github.com/baijum/pyservicebinding).
 
 ## Consuming the Bindings from Applications
 
