@@ -6,7 +6,8 @@ sidebar_position: 3
 
 [Direct Secret Reference][direct-secret-reference] allows to connect to a
 service by using Secret as a reference.  This is useful when there is no
-Provisioned Service available.
+Provisioned Service available.  All the keys in the Secret resource is exposed
+as binding data.
 
 Here is an example usage:
 

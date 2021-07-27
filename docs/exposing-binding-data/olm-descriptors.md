@@ -6,8 +6,10 @@ sidebar_position: 5
 
 If your operator is distributed as an [Operator
 Bundle](https://github.com/operator-framework/operator-registry/blob/master/docs/design/operator-bundle.md),
-you can add OLM descriptors to expose the binding data.  The OLM descriptors are
-part of [Cluster Service
+you can add [OLM
+descriptors](https://github.com/openshift/console/blob/master/frontend/packages/operator-lifecycle-manager/src/components/descriptors/reference/reference.md)
+to describe what binding data are exposed.  The OLM descriptors are part of
+[Cluster Service
 Version](https://docs.openshift.com/container-platform/4.7/operators/operator_sdk/osdk-generating-csvs.html)
 files.  To expose the binding data, you can use SpecDescriptors and
 StatusDescriptors.  To specify a path under the `.spec` of a custom resource,

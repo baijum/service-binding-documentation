@@ -56,4 +56,6 @@ spec:
     name: prod-account-service
 ```
 
+All the keys in the Secret resource is exposed as binding data.
+
 [provisioned-service]: https://github.com/k8s-service-bindings/spec#provisioned-service
