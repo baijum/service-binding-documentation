@@ -13,8 +13,8 @@ Here is a schematic diagram of this setup:
 
 ![postgresql-spring-boot](/img/docs/postgresql-spring-boot.png)
 
-The service binding operator will collect backing service configuration required
-for the connectivity and expose it to the sample application.
+The service binding operator collects backing service configuration required for
+the connectivity and expose it to the sample application.
 
 This topic provides the following information on how to deploy application and connect it to a a backing service:
 
@@ -46,7 +46,7 @@ connection.
 convenience, run this command to create `Pgcluster` custom resource:
 
 ```bash
-kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/pgcluster.yaml
+kubectl apply -f https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/pgcluster.yaml
 ```
 
 2. Ensure all the pods in `my-postgresql` is running (it will take few minutes):
@@ -71,7 +71,7 @@ work with the application.
 command:
 
 ```bash
-bash <(curl -s https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/init-database.sh)>
+bash <(curl -s https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/init-database.sh)>
 ```
 
 Now the database is ready to connect from application.  The next section
@@ -82,7 +82,7 @@ explains how to configure application:
 1. Deploy the `spring-petclinic-rest` app with this `Deployment` configuration:
 
 ```bash
-kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/app-deployment.yaml
+kubectl apply -f https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/app-deployment.yaml
 ```
 
 2. Port forward the application port and try to access it from your local system
@@ -95,8 +95,21 @@ kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n my-p
 
 You should see a [Swagger UI][swagger] where you can play with the API.
 
-Since the binding is not present in the application, you will not see be any
-values in results.  In the next section, you will see how to fix it.
+Since the binding is not present in the application, you cannot see be any
+values in results.
+
+If you try to access list of all pets, you can see an error like this:
+
+```
+curl -X GET "http://localhost:9966/petclinic/api/pets" -H "accept: application/json"
+
+{"className":"org.springframework.transaction.CannotCreateTransactionException","exMessage":"Could
+not open JPA EntityManager for transaction; nested exception is
+org.hibernate.exception.JDBCConnectionException: Unable to acquire JDBC
+Connection"}
+```
+
+In the next section, you will see how to fix it.
 
 ## Connecting the application to a backing service
 
@@ -133,7 +146,7 @@ spec:
 For the convenience, the above resource can be installed like this:
 
 ```bash
-kubectl apply -f https://gist.github.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/04eb5fe3d7f393af5a6760b03d9a1a3f5c725077/service-binding.yaml
+kubectl apply -f https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/service-binding.yaml
 ```
 
 The [next section](../creating-service-bindings/creating-service-binding)
@@ -148,6 +161,14 @@ kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n my-p
 3. Open [http://localhost:9966/petclinic](http://localhost:9966/petclinic)
 
 You should see a [Swagger UI][swagger] where you can play with the API.
+
+If you try to access list of all pets, you can see the result like this:
+
+```
+$ curl -X GET "http://localhost:9966/petclinic/api/pets" -H "accept: application/json"
+[{"id":1,"name":"Leo","birthDate":"2000/09/07","type":{"id":1,"name":"cat"},
+"owner":{"id":1,"firstName":"George","lastName":"Franklin","address":"110...
+```
 
 ## Summary
 
