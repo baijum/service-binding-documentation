@@ -5,51 +5,48 @@ sidebar_position: 2
 # Quick start
 
 In this quick start, you will see a sample application that you can deploy and
-use to play around.  As part of this exercise, a backing service and an
-application is required.  The backing service is a PostgreSQL database and
-application is a [Spring Boot REST API server][petclinic].
+use to play around. This will allow you to understand how Service Binding Operator can be used to simplify the connection between a service, like a database and the application.
 
-Here is a schematic diagram of this setup:
+For this sample, we will be using a PostgreSQL database and a simple application which will be the [Spring Boot REST API server][petclinic] sample.
+
+To illustrate what we are going to do, here is a visual representation of the application we are going to setup.
 
 ![postgresql-spring-boot](/img/docs/postgresql-spring-boot.png)
 
-The service binding operator collects backing service configuration required for
-the connectivity and expose it to the sample application.
+In this configuration, we will leverage the service binding operator, to collect the binding metadatas from the PostgreSQL database and inject them into the sample application.
 
-This topic provides the following information on how to deploy application and connect it to a a backing service:
+Before starting, we invit you to refer to the [Prerequisites](#prerequisites) section to make sure you have all the needed components configured on your K8s cluster. 
 
-1. [Prerequisites](#prerequisites)
-2. [Creating a database instance](#creating-a-database-instance)
-3. [Deploying an application](#deploying-an-application)
-4. [Connecting the application to a backing service](#connecting-the-application-to-a-backing-service)
+The quick start will then consist into three main steps:
+1. [Create a PostgreSQL database instance](#creating-a-database-instance)
+2. [Deploy the application](#deploying-an-application)
+3. [Connect the application to the database with Service Binding](#connecting-the-application-to-a-backing-service)
 
 ## Prerequisites
 
-The following components must be installed and configured:
+In order to follow the quick start, you'll need the following tools installed and configured:
 
 - Kubernetes cluster (**Note:** You can use [minikube](https://minikube.sigs.k8s.io/) or
   [kind](https://kind.sigs.k8s.io/), locally)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
-- [Service Binding Operator](installing-service-binding).
+- [Service Binding Operator](installing-service-binding)
 
-## Creating a database instance
+# Create a PostgreSQL database instance
 
-The application is going to connect to a PostgreSQL database backend.  The
-PostgreSQL can be setup using the [Crunchy PostgreSQL operator from
+The application is going to use to a PostgreSQL database backend which can be setup using the [Crunchy PostgreSQL operator from
 OperatorHub.io][crunchy].
 
-The installation of the operator doesn't create a database instance for
-connection.
+The installation of the operator doesn't create a database instance itself, so we need to create one. 
 
 1. To create a database instance, you need to create custom resource
-(`Pgcluster`) and that will trigger the operator reconciliation.  For
+`Pgcluster` and that will trigger the operator reconciliation.  For
 convenience, run this command to create `Pgcluster` custom resource:
 
 ```bash
 kubectl apply -f https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/pgcluster.yaml
 ```
 
-2. Ensure all the pods in `my-postgresql` is running (it will take few minutes):
+2. Once the database is created, we need to ensure all the pods in `my-postgresql` namespace are running (it will take few minutes):
 
 ```bash
 kubectl get pod -n my-postgresql
@@ -64,8 +61,7 @@ hippo-597dd64d66-4ztww                        1/1     Running   0          3m33s
 hippo-backrest-shared-repo-66ddc6cf77-sjgqp   1/1     Running   0          4m27s
 ```
 
-The database will be empty by default, it requires the schema and sample data to
-work with the application.
+The database has been created and is empty at this stage. We now need to set its schema and we will also inject a sample data set, so we can play around with the application. 
 
 3. You can initialize the database with the schema and sample data using this
 command:
@@ -74,10 +70,11 @@ command:
 bash <(curl -s https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/init-database.sh)>
 ```
 
-Now the database is ready to connect from application.  The next section
-explains how to configure application:
+We have now finished to configured the database for the application. We are ready to deploy the sample application and connect it to the database. 
 
 ## Deploying an application
+
+In this section, we are going to deploy the application on our kubernetes cluster. For that, we will use a deployment configuration and do the configuration of our local environment to be able to 
 
 1. Deploy the `spring-petclinic-rest` app with this `Deployment` configuration:
 
@@ -85,20 +82,17 @@ explains how to configure application:
 kubectl apply -f https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/app-deployment.yaml
 ```
 
-2. Port forward the application port and try to access it from your local system
+2. Let's now setup the port forwarding from the application port so we can access it from our local environment
 
 ```
 kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n my-postgresql
 ```
 
-3. open [http://localhost:9966/petclinic](http://localhost:9966/petclinic)
+3. You should be able to open [http://localhost:9966/petclinic](http://localhost:9966/petclinic) and see a [Swagger UI][swagger] where you can play with the API.
 
-You should see a [Swagger UI][swagger] where you can play with the API.
+At this stage, the application is not yet connected to the database. So, if you try to play around the APIs, you'll see errors returned by the application. 
 
-Since the binding is not present in the application, you cannot see be any
-values in results.
-
-If you try to access list of all pets, you can see an error like this:
+For example, if you try to access the list of all pets, you can see an error like this:
 
 ```
 curl -X GET "http://localhost:9966/petclinic/api/pets" -H "accept: application/json"
@@ -109,11 +103,20 @@ org.hibernate.exception.JDBCConnectionException: Unable to acquire JDBC
 Connection"}
 ```
 
-In the next section, you will see how to fix it.
+Now, we are going to see how you can use Service Binding to easily connect the application to the database.
 
-## Connecting the application to a backing service
+## Connecting the application to the database
 
-The application was not working as the bindings were not present in the app.
+**Explanations about how one would do without Service binding.**
+Suppose the Service
+Binding operator is not present.  In that case, the application's admin needs to
+extract all the configuration details and create a Secret resource and expose it
+to the application through volume mount in Kubernetes.
+
+
+In this quick start, we are going to leverage Service Binding as a way to easily and safely connect the application to the database service. 
+In order to do that, we'll need to create a Service Binding ressource which will trigger the Service Binding Operator to inject the binding metadatas into the application.
+
 
 1. Create the ServiceBinding custom resource to inject the bindings:
 
@@ -143,26 +146,29 @@ spec:
       value: "postgresql"
 ```
 
-For the convenience, the above resource can be installed like this:
+For simplicity, you can copy/paste the following command to create the resource:
 
 ```bash
 kubectl apply -f https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/service-binding.yaml
 ```
 
-The [next section](../creating-service-bindings/creating-service-binding)
-explains the ServiceBinding configuration.
+To learn more about creating service bindings, you can find more information on the following [document](../creating-service-bindings/creating-service-binding)..
 
-2. Port forward the application port and access it from your local system
+**We need to explain what's going on in the application:**
+- What has been injected?
+- Where it has been injected?
+- How the application found the metadata
+
+
+2. Let's now check how the application is behaving and setup the port forwarding of the application port to access it from our local environment
 
 ```
 kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n my-postgresql
 ```
 
-3. Open [http://localhost:9966/petclinic](http://localhost:9966/petclinic)
+3. Open [http://localhost:9966/petclinic](http://localhost:9966/petclinic), you should see a [Swagger UI][swagger] where you can play with the API.
 
-You should see a [Swagger UI][swagger] where you can play with the API.
-
-If you try to access list of all pets, you can see the result like this:
+If you try to access list of all pets, you can see the application is now connected to the database and see the sample data initially configured:
 
 ```
 $ curl -X GET "http://localhost:9966/petclinic/api/pets" -H "accept: application/json"
@@ -170,13 +176,17 @@ $ curl -X GET "http://localhost:9966/petclinic/api/pets" -H "accept: application
 "owner":{"id":1,"firstName":"George","lastName":"Franklin","address":"110...
 ```
 
-## Summary
+## Next Steps
 
-The Service Binding operator collects the backing service configuration required
-for connectivity and exposes it to the applications.  Suppose the Service
-Binding operator is not present.  In that case, the application's admin needs to
-extract all the configuration details and create a Secret resource and expose it
-to the application through volume mount in Kubernetes.
+In this sample, we setup a database and connected it to an application using the Service Binding operator to collect the connection metadata and expose them to the application.
+
+By using service bindings, developers are able to more easily leverage the services available to them on a Kubernetes cluster. 
+This method provides consistency accross different services and is repeatable for the developers. By remove the usual manual and error prone configuration, they benefit from a unified way to do application-to-service linkage.
+
+You can continue to learn more about Service Binding by:
+- link 1
+- link 2
+
 
 [petclinic]: https://github.com/spring-petclinic/spring-petclinic-rest
 [olm]: https://olm.operatorframework.io
