@@ -74,7 +74,7 @@ We have now finished to configured the database for the application. We are read
 
 ## Deploying an application
 
-In this section, we are going to deploy the application on our kubernetes cluster. For that, we will use a deployment configuration and do the configuration of our local environment to be able to 
+In this section, we are going to deploy the application on our kubernetes cluster. For that, we will use a deployment configuration and do the configuration of our local environment to be able to test the application.
 
 1. Deploy the `spring-petclinic-rest` app with this `Deployment` configuration:
 
