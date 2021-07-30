@@ -55,7 +55,7 @@ we need to create one.
 kubectl apply -f https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/pgcluster.yaml
 ```
 
-To enable binding, the `Pgcluster` resource has these annotions:
+In this `Pgcluster` custom resource, you might notice some annotations that we added, those will be necessary to enable binding later into the quick start guide:
 
 ```
 service.binding/database: path={.spec.name}
@@ -155,14 +155,14 @@ Service Binding Operator to inject the binding metadatas into the application.
 
 1. Create the ServiceBinding custom resource to inject the bindings:
 
-The `.spec` has two sections, the first one is a list of service resurces
+The `.spec` has two sections, the first one is a list of service resources
 (`.spec.services`) and the second one is the `.spec.application`.  The services
-resources points to backing service resources.  How the values are exposed from
+resources points to the database's service resources.  How the values are exposed from
 service resources are explained [Exposing binding
 data](../exposing-binding-data/intro-expose-binding) section.  In the below
 ServiceBinding resource, there are two service resources, one custom resource
 and another Secret resource.  This is required as the values required for
-database connectivity is distributed in these two resources.  The application
+database connectivity are living in these two resources.  The application
 points to a `Deployment` or any similar resource with an embedded `PodSpec`.
 The mappings has extra mappings required for connectity.
 
@@ -202,10 +202,9 @@ To learn more about creating service bindings, you can find more information on
 the following
 [document](../creating-service-bindings/creating-service-binding)..
 
-The values from backing service resource is injected into the application
-container as files.  It will be injected under `/bindings/spring-petclinic-rest`
-directory.  All the values from the Secret resource is injected.  In the above
-example, that is `username` and `password`.  And the values pointed out through
+By creating this `Service Binding` resource, we now have values from the database's binding metadata injected into the application
+container as files (that's the default behavior, but you can also inject environment variables if you prefer).  If you check under `/bindings/spring-petclinic-rest` directory you'll see all the values from the secret resource injected there.  In the above
+example, you'll find `username` and `password`.  And the values pointed out through
 the annotation are also injected which includes `database`, `host`, and
 `password`.  Finally, from the mappings, `type` is also injected.  The
 application can look for `SERVICE_BINDING_ROOT` env var to find the location of
