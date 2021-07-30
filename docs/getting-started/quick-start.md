@@ -2,30 +2,41 @@
 sidebar_position: 2
 ---
 
-# Quick start
+# Quick Start Guide
 
-In this quick start, you will see a sample application that you can deploy and
-use to play around. This will allow you to understand how Service Binding
-Operator can be used to simplify the connection between a service, like a
-database and the application.
+Service Binding manages the data plane for applications and backing services.
+This guide provides the minimal information a needs to install the Service
+Binding Operator and use it to create a binding connection between components
+within an application.
 
-For this sample, we will be using a PostgreSQL database and a simple application
-which will be the [Spring Boot REST API server][petclinic] sample.
+The goal of this quick start guide is to:
+
+- Provide an overview of Service Binding Operator.
+- Provide a list of prerequisites to be configured on your Kubernetes cluster.
+- Create a PostgreSQL database instance
+- Deploy the application
+- Connect the application to the database with Service Binding
+
+For this quick start, we are using a PostgreSQL database and a simple
+application using the [Spring Boot REST API server][petclinic] sample.  This
+will allow you to understand how Service Binding Operator can be used to
+simplify the connection between a service, like a database and the application.
 
 To illustrate what we are going to do, here is a visual representation of the
 application we are going to setup.
 
 ![postgresql-spring-boot](/img/docs/postgresql-spring-boot.png)
 
-In this configuration, we will leverage the service binding operator, to collect
-the binding metadatas from the PostgreSQL database and inject them into the
-sample application.
+In this configuration, we leverage the service binding operator, to collect the
+binding metadata from the PostgreSQL database and inject them into the sample
+application.
 
-Before starting, we invit you to refer to the [Prerequisites](#prerequisites)
+Before starting, we invite you to refer to the [Prerequisites](#prerequisites)
 section to make sure you have all the needed components configured on your K8s
 cluster.
 
 The quick start will then consist into three main steps:
+
 1. [Create a PostgreSQL database instance](#creating-a-database-instance)
 2. [Deploy the application](#deploying-an-application)
 3. [Connect the application to the database with Service Binding](#connecting-the-application-to-a-backing-service)
@@ -55,7 +66,9 @@ we need to create one.
 kubectl apply -f https://servicebinding.dev/resourecs/pgcluster.yaml
 ```
 
-In this `Pgcluster` custom resource, you might notice some annotations that we added, those will be necessary to enable binding later into the quick start guide:
+In this `Pgcluster` custom resource, you might notice some annotations that we
+added, those will be necessary to enable binding later into the quick start
+guide:
 
 ```
 service.binding/database: path={.spec.name}
@@ -116,7 +129,9 @@ kubectl apply -f https://servicebinding.dev/resourecs/app-deployment.yaml
 kubectl port-forward --address 0.0.0.0 svc/spring-petclinic-rest 9966:80 -n my-postgresql
 ```
 
-3. You should be able to open [http://localhost:9966/petclinic](http://localhost:9966/petclinic) and see a [Swagger UI][swagger] where you can play with the API.
+3. You should be able to open
+   [http://localhost:9966/petclinic](http://localhost:9966/petclinic) and see a
+   [Swagger UI][swagger] where you can play with the API.
 
 At this stage, the application is not yet connected to the database. So, if you
 try to play around the APIs, you'll see errors returned by the application.
