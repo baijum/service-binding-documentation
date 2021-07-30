@@ -211,9 +211,11 @@ example, you'll find `username` and `password`.  And the values pointed out
 through the annotation are also injected which includes `database`, `host`, and
 `port`.  Finally, from the mappings, `type` is also injected.  The application
 looks for `SERVICE_BINDING_ROOT` env var to find the location of `/bindings`
-directory.  See the [using injected
-bindings](../using-injected-bindings/using-injected-bindings) section about how
-the values can be used from the application.
+directory.  The Spring Boot application used here is built using [Spring Cloud
+Bindings](https://github.com/spring-cloud/spring-cloud-bindings) and it looks
+for `SERVICE_BINDING_ROOT` to get the injected bindings.  See the [using
+injected bindings](../using-injected-bindings/using-injected-bindings) section
+about how the values can be used from the application.
 
 2. Let's now check how the application is behaving and setup the port forwarding
    of the application port to access it from our local environment
