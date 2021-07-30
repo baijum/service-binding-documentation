@@ -32,12 +32,12 @@ Operator through the OpenShift Container Platform web UI.
 
 1. Navigate in the web console to the OperatorHub page and type "Service Binding" into the "Filter by keyword" box:
 
-![install-1](/img/docs/sbo-install/install-1.png**
+![ocp_operathub](/img/docs/sbo-install/ocp_operathub.png)
 
 2. Click **Service Binding Operator** from the result.  A page to install the
    Operator is displayed with additional information about the Operator.
 
-![install-2](/img/docs/sbo-install/install-2.png)
+![sbo_intall_landing](/img/docs/sbo-install/sbo_intall_landing.png)
 
 3. Click **Install**. The Install Operator page is displayed.
 
@@ -45,9 +45,9 @@ Operator through the OpenShift Container Platform web UI.
    installation is complete, a page with the **Installed Operator -- ready for use**
    message is displayed.
 
-![install-3](/img/docs/sbo-install/install-3.png)
+![sbo_install_options](/img/docs/sbo-install/sbo_install_options.png)
 
 5. Click **View Operator**. The **Service Binding Operator** page is displayed
    with the Operator details.
 
-![install-5](/img/docs/sbo-install/install-5.png)
+![sbo_post_install](/img/docs/sbo-install/sbo_post_install.png)

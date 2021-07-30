@@ -52,7 +52,7 @@ we need to create one.
    command to create `Pgcluster` custom resource:
 
 ```bash
-kubectl apply -f https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/pgcluster.yaml
+kubectl apply -f https://servicebinding.dev/resourecs/pgcluster.yaml
 ```
 
 In this `Pgcluster` custom resource, you might notice some annotations that we added, those will be necessary to enable binding later into the quick start guide:
@@ -91,7 +91,7 @@ application.
    command:
 
 ```bash
-bash <(curl -s https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/init-database.sh)>
+bash <(curl -s https://servicebinding.dev/resourecs/init-database.sh)>
 ```
 
 We have now finished to configured the database for the application. We are
@@ -106,7 +106,7 @@ configuration of our local environment to be able to test the application.
 1. Deploy the `spring-petclinic-rest` app with this `Deployment` configuration:
 
 ```bash
-kubectl apply -f https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/app-deployment.yaml
+kubectl apply -f https://servicebinding.dev/resourecs/app-deployment.yaml
 ```
 
 2. Let's now setup the port forwarding from the application port so we can
@@ -195,7 +195,7 @@ spec:
 For simplicity, you can copy/paste the following command to create the resource:
 
 ```bash
-kubectl apply -f https://gist.githubusercontent.com/baijum/b99cd8e542868a00b2b5efc2e1b7dc10/raw/11e790fb1d23aa4d3ee03c260169a08b36fb25bc/service-binding.yaml
+kubectl apply -f https://servicebinding.dev/resourecs/service-binding.yaml
 ```
 
 To learn more about creating service bindings, you can find more information on
