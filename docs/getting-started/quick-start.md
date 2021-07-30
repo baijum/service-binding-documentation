@@ -202,13 +202,16 @@ To learn more about creating service bindings, you can find more information on
 the following
 [document](../creating-service-bindings/creating-service-binding)..
 
-By creating this `Service Binding` resource, we now have values from the database's binding metadata injected into the application
-container as files (that's the default behavior, but you can also inject environment variables if you prefer).  If you check under `/bindings/spring-petclinic-rest` directory you'll see all the values from the secret resource injected there.  In the above
-example, you'll find `username` and `password`.  And the values pointed out through
-the annotation are also injected which includes `database`, `host`, and
-`password`.  Finally, from the mappings, `type` is also injected.  The
-application can look for `SERVICE_BINDING_ROOT` env var to find the location of
-`/bindings` directory.  See the [using injected
+By creating this `Service Binding` resource, we now have values from the
+database's binding metadata injected into the application container as files
+(that's the default behavior, but you can also inject environment variables if
+you prefer).  If you check under `/bindings/spring-petclinic-rest` directory
+you'll see all the values from the secret resource injected there.  In the above
+example, you'll find `username` and `password`.  And the values pointed out
+through the annotation are also injected which includes `database`, `host`, and
+`port`.  Finally, from the mappings, `type` is also injected.  The application
+looks for `SERVICE_BINDING_ROOT` env var to find the location of `/bindings`
+directory.  See the [using injected
 bindings](../using-injected-bindings/using-injected-bindings) section about how
 the values can be used from the application.
 
