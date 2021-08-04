@@ -28,8 +28,8 @@ Today in Kubernetes, the exposure of secrets for connecting applications to exte
 
 **Extracting Binding data from Services**
 
-- Extract binding data based on annotations present in CRDs/CRs/resources.
-- Extract binding data based on annotations present in OLM descriptors.
+- Extract binding data based on annotations present in CRDs/CRs/resources
+- Extract binding data based on annotations present in OLM descriptors
 
 **Service Binding Options**
 
@@ -39,7 +39,7 @@ Today in Kubernetes, the exposure of secrets for connecting applications to exte
 - Secret substitution and mappings with Go Template 
 - Auto-detection of bindings in the absence of binding decorators
 - Binding of PodSpec or non-PodSpec workloads
-- Custom binding variables composed from one or more backing services.
+- Custom binding variables composed from one or more backing services
 
 ### Security
 
