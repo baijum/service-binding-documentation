@@ -38,7 +38,7 @@ cluster.
 The quick start will then consist into three main steps:
 
 1. [Create a PostgreSQL database instance](#creating-a-database-instance)
-2. [Deploy the application](#deploying-an-application)
+2. [Deploy the application](#deploying-the-sample-application)
 3. [Connect the application to the database with Service Binding](#connecting-the-application-to-a-backing-service)
 
 ## Prerequisites
@@ -50,7 +50,7 @@ In order to follow the quick start, you'll need the following tools installed an
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 - [Service Binding Operator](installing-service-binding)
 
-# Create a PostgreSQL database instance
+## Create a PostgreSQL database instance
 
 The application is going to use to a PostgreSQL database backend which can be
 setup using the [Crunchy PostgreSQL operator from OperatorHub.io][crunchy].
@@ -110,7 +110,7 @@ bash <(curl -s https://servicebinding.dev/resourecs/init-database.sh)>
 We have now finished to configured the database for the application. We are
 ready to deploy the sample application and connect it to the database.
 
-## Deploying an application
+## Deploying the sample application
 
 In this section, we are going to deploy the application on our kubernetes
 cluster. For that, we will use a deployment configuration and do the
