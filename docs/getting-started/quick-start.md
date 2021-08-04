@@ -63,7 +63,7 @@ we need to create one.
    command to create `Pgcluster` custom resource:
 
 ```bash
-kubectl apply -f https://servicebinding.dev/resourecs/pgcluster.yaml
+kubectl apply -f https://github.com/slemeur/service-binding-documentation/raw/main/static/resources/pgcluster.yaml
 ```
 
 In this `Pgcluster` custom resource, you might notice some annotations that we
@@ -104,7 +104,7 @@ application.
    command:
 
 ```bash
-bash <(curl -s https://servicebinding.dev/resourecs/init-database.sh)>
+bash <(curl -s https://github.com/slemeur/service-binding-documentation/raw/main/static/resourecs/init-database.sh)>
 ```
 
 We have now finished to configured the database for the application. We are
@@ -119,7 +119,7 @@ configuration of our local environment to be able to test the application.
 1. Deploy the `spring-petclinic-rest` app with this `Deployment` configuration:
 
 ```bash
-kubectl apply -f https://servicebinding.dev/resourecs/app-deployment.yaml
+kubectl apply -f https://github.com/slemeur/service-binding-documentation/raw/main/static/resources/app-deployment.yaml
 ```
 
 2. Let's now setup the port forwarding from the application port so we can
@@ -210,7 +210,7 @@ spec:
 For simplicity, you can copy/paste the following command to create the resource:
 
 ```bash
-kubectl apply -f https://servicebinding.dev/resourecs/service-binding.yaml
+kubectl apply -f https://github.com/slemeur/service-binding-documentation/raw/main/static/resources/service-binding.yaml
 ```
 
 To learn more about creating service bindings, you can find more information on
