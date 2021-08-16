@@ -4,9 +4,9 @@ sidebar_position: 1
 
 # Using Injected Bindings
 
-The bindings could injected as files or enviroment variables. By default
+The bindings could be injected as files or enviroment variables.  By default
 bindings are injected as files.  To inject enviroment variable, set
-`.spec.bindAsFiles` value to `false`.
+`.spec.bindAsFiles` value to `false` in the `ServiceBinding` resource.
 
 For determining the folder where bindings should be injected, you can specify
 the destination using `.spec.mountPath` or you can set `SERVICE_BINDING_ROOT`
