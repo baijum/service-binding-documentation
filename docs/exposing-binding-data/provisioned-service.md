@@ -4,13 +4,22 @@ sidebar_position: 2
 
 # Provisioned Service
 
-[Provisioned Service][provisioned-service] is any backing service custom
+[Provisioned Service][provisioned-service] represents a backing service custom
 resource with reference to a Secret resource.  The Secret resource must have all
 the values for required for connecting to the backing service.  The reference to
 the Secret resource must be available in `.status.binding.name` attribute of the
 custom resource.
 
-Here is an example:
+[Provisioned Service][provisioned-service] is useful for backing service authors
+to provide all the values required for connectivity.
+
+Let's say you are working on an `AccountService` custom resource representing a
+backing service.  As the the author of that backing service, you can create a
+Secret resource with all the necessary connection details and refer the same
+from `.status.binding.name` field.  It makes the `AccountService` conforms to a
+Provisioned Service.
+
+This example shows an `AccountService` resource with relavant details:
 
 ```
 apiVersion: example.com/v1alpha1
