@@ -13,15 +13,14 @@ exposing binding metadata by either:
 4. Secret Generated through OLM Descriptors
 5. Detect Bindings through owned resources
 
-If it's not the case, please refer to the "exposing binding data" section.
-
-You also required the application ready to create the ServiceBinding resource.
+You also required the application ready before creating the ServiceBinding
+resource.
 
 There are two APIs supported by the Service Binding Operator.  Both has
 `ServiceBinding` as the same name for the kind.  But the API group is different.
 
 1. binding.operators.coreos.com
-2. service.binding
+2. service.binding (API group used in the [Service Binding Spec][spec])
 
 Here is the example configuration with `binding.operators.coreos.com` API group:
 
@@ -68,3 +67,5 @@ only supports only one service.  The service kind is `Database`, API group is
 
 The application resource is a deployment resource with name as
 `online-banking`.
+
+[spec]: https://github.com/k8s-service-bindings/spec
