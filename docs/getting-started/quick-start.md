@@ -104,7 +104,7 @@ application.
    command:
 
 ```bash
-bash <(curl -s https://github.com/slemeur/service-binding-documentation/raw/main/static/resourecs/init-database.sh)>
+curl -sL https://github.com/slemeur/service-binding-documentation/raw/main/static/resources/init-database.sh | bash
 ```
 
 We have now finished to configured the database for the application. We are
