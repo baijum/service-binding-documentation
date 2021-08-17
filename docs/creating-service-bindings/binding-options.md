@@ -6,9 +6,14 @@ sidebar_position: 2
 
 ## Transform binding names before projection into application
 
-Binding names declared through annotations or CSV descriptors are processed before injected into the application according to the following strategy
- - names are upper-cased
- - service resource kind is upper-cased and prepended to the name
+This feature is only available for `ServiceBinding` in the
+`binding.operators.coreos.com` API group.
+
+Binding names declared through annotations or OLM descriptors are processed
+before injected into the application according to the following strategy
+
+- names are upper-cased
+- service resource kind is upper-cased and prepended to the name
 
 example:
 ```yaml
@@ -27,6 +32,7 @@ ServiceBinding request.
 
 
 #### How ?
+
 Following fields are part of `ServiceBinding` request.
 - Application
 ```yaml
@@ -70,6 +76,7 @@ We can define how that key should be prepared defining string template in `namin
 #### Naming Strategies
 
 There are few naming strategies predefine.
+
 1. `none` - When this is applied, we get binding names in following form - `{{ .name }}`
 ```yaml
 host: example.com
@@ -97,13 +104,22 @@ port: 8080
 3. `title` - Title case all letters.
 
 
-## Compose custom binding variables <kbd>TBU</kbd>
+## Compose custom binding variables
 
-If the backing service doesn't expose binding metadata or the values exposed are not easily consumable, then an application author may compose custom binding variables using attributes in the Kubernetes resource representing the backing service.
+This feature is only available for `ServiceBinding` in the
+`binding.operators.coreos.com` API group.
 
-The *custom binding variables* feature enables application authors to request customized binding secrets using a combination of Go and jsonpath templating.
+If the backing service doesn't expose binding metadata or the values exposed are
+not easily consumable, then an application author may compose custom binding
+variables using attributes in the Kubernetes resource representing the backing
+service.
 
-Example, the backing service CR may expose the host, port and database user in separate variables, but the application may need to consume this information as a connection string.
+The *custom binding variables* feature enables application authors to request
+customized binding secrets using a combination of Go and jsonpath templating.
+
+Example, the backing service CR may expose the host, port and database user in
+separate variables, but the application may need to consume this information as
+a connection string.
 
 
 ``` yaml
@@ -154,8 +170,3 @@ spec:
       value: {{ json .postgresDB.status }}
 
 ```
-
-This has been adopted in [IBM CodeEngine](https://cloud.ibm.com/docs/codeengine?topic=codeengine-kn-service-binding).
-
-
-*In future releases, the above would be supported as volume mounts too.*
