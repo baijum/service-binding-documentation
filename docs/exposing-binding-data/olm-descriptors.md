@@ -20,16 +20,16 @@ The secret generation behavior explained in the annotations is applicable for
 OLM descriptors also.  The data model is also same as that of annotations, but
 the syntax is different to match OLM descriptors naming pattern.
 
-The only two fields that is used for binding is `Path` and `X-Descriptors`.
-Path is a dot-delimited path of the field on the object that the descriptor
-describes. The X-Descriptors define the binding meta-data similar to CR/CRD
+The only two fields used for binding are `Path` and `X-Descriptors`.
+**Path** is a dot-delimited path of the field on the object that the descriptor
+describes. The **X-Descriptors** defines the binding meta-data similar to CR/CRD
 annotation.
 
-If the path is pointing to a `Secret` resource, there should be an X-Descriptors like this:
+If the path is pointing to a `Secret` resource, there should be an X-Descriptors defined like this:
 
     urn:alm:descriptor:io.kubernetes:Secret
 
-Similary, if the path is pointing to a `ConfigMap` resource, there should be an X-Descriptors like this:
+Similary, if the path is pointing to a `ConfigMap` resource, there should be an X-Descriptors defined like this:
 
     urn:alm:descriptor:io.kubernetes:ConfigMap
 
@@ -81,7 +81,7 @@ indicate the path is pointing to a ConfigMap resource.
 
 ## Mount an entry from a ConfigMap/Secret into the binding Secret
 
-To specify a particular entry from a Secret or ConfigMap, the X-Descriptor can
+When you want to extract only a particular entry from a Secret or ConfigMap, the X-Descriptor can
 update `service.binding` line with a name and `sourceKey`.  Here is an example:
 
 ```
@@ -97,8 +97,8 @@ binding key that's going to be injected.
 
 ## Mount a resource definition value into the binding Secret
 
-At many times, values required for binding will be available as attributes of
-backing service resources.  These values can be specified for binding, using an
+When values required for binding to the backing service are available as attributes of
+its resources, it's possible to annotate these values (which will identify them as "binding metadata"), using an
 X-Descriptors with name.  Here is an example:
 
 ```
