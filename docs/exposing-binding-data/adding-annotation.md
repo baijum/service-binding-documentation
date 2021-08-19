@@ -4,18 +4,21 @@ sidebar_position: 4
 
 # Adding Binding Metadata as Annotations
 
-Many services, especially initially, will not be Provisioned Service-compliant.
-These services will expose the appropriate binding information, but not in the
-way that the specification or applications expect.  Users should have a way of
-describing a mapping from existing data associated with arbitrary resources and
-CRDs to a representation of a binding Secret.
+Many services, are not Provisioned Service-compliant.
+These services are still exposing the appropriate binding information, but not in the
+way that the specification and Service Binding operator expect. As a result, 
+you'll need to manually alter the backing services' custom resources and CRDs by adding annotations to create a corresponding 
+mapping with the connectivity values (and binding metadata). 
 
-To handle the majority of existing resources and CRDs, Secret generation needs
+, Secret generation needs
 to support the following behaviors:
 
+To handle the scenarios of mapping and extracting the binding metadata, Service Binding Operator
+provides the ability to extract the values from the backing service resources and CRDs, in the following way:
+
 1. Extract a string from a resource
-2. Extract an entire ConfigMap/Secret refrenced from a resource
-3. Extract a specific entry in a ConfigMap/Secret referenced from a resource
+2. Extract an entire ConfigMap/Secret referenced from a resource
+3. Extract a specific entry from a ConfigMap/Secret referenced from a resource
 4. Extract entries from a collection of objects, mapping keys and values from
    entries in a ConfigMap/Secret referenced from a resource
 5. Extract a collection of specific entry values in a resource's collection of
@@ -23,10 +26,8 @@ to support the following behaviors:
 6. Map each value to a specific key
 7. Map each value of a collection to a key with generated name
 
-One of the approach to specify binding metadata is through annotations.  Another
-one is OLM descriptors which is explained in the next chapter.  The annotations
-can be added to the custom resource definition (CRD) or custom resource (CR).
-The annotations can be added under the `metadata` section.  A couple of example
+
+The annotations will need to be added under the `metadata` section to be injected by Service Binding operator into an application.  A couple of example
 are given below:
 
 ```
@@ -59,6 +60,8 @@ status:
     dbConfiguration: db-conf
 ```
 
+
+
 ## Data Model
 
 * `path`: A template representation of the path to the element in the Kubernetes
@@ -72,7 +75,7 @@ status:
   to a `ConfigMap`, `Secret` or a plain string in the current namespace!
   Defaults to `Secret` if omitted and `elementType` is a non-`string`.
 
-* `sourceKey`: Specifies the key in the ConfigMap/Secret that is be added to the
+* `sourceKey`: Specifies the key in the ConfigMap/Secret to be added to the
   binding Secret. When used in conjunction with `elementType`=`sliceOfMaps`,
   `sourceKey` specifies the key in the slice of maps whose value would be used
   as a key in the binding Secret.  This optional field can be used if the
@@ -86,7 +89,6 @@ status:
   `sliceOfMaps`.
 
 
-One of the way to expose binding data to
 
 ## Expose all Secret keys as binding data
 
