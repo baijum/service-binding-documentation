@@ -16,12 +16,12 @@ StatusDescriptors.  To specify a path under the `.spec` of a custom resource,
 use SpecDescriptors.  Similarly, to specify a path under `.status` of a custom
 resource, use StatusDescriptors.
 
-The secret generation behavior explained in the annotations is applicable for
-OLM descriptors also.  The data model is also same as that of annotations, but
-the syntax is different to match OLM descriptors naming pattern.
+The Service Binding will detect the OLM descriptors.  Then the Service Binding
+will create a Secret with the values extracted based on the same.  Finally the
+Service Binding will inject the values into the application.
 
-The only two fields used for binding are `Path` and `X-Descriptors`.
-**Path** is a dot-delimited path of the field on the object that the descriptor
+The only two fields used for binding are `Path` and `X-Descriptors`.  **Path**
+is a dot-delimited path of the field on the object that the descriptor
 describes. The **X-Descriptors** defines the binding meta-data similar to CR/CRD
 annotation.
 
@@ -29,17 +29,18 @@ If the path is pointing to a `Secret` resource, there should be an X-Descriptors
 
     urn:alm:descriptor:io.kubernetes:Secret
 
-Similary, if the path is pointing to a `ConfigMap` resource, there should be an X-Descriptors defined like this:
+Similary, if the path is pointing to a `ConfigMap` resource, there should be an
+X-Descriptors defined like this:
 
     urn:alm:descriptor:io.kubernetes:ConfigMap
 
+There should be a `service.binding` entry in the X-Descriptors to identify that
+this is a Service Binding configuration.
+
 If the `Secret` or `ConfigMap` specific X-Descriptors are not present, that
-descriptor should be accessing multiple values at the given path.
+descriptor is referencing the value at the given path.
 
-There should be a `service.binding` entry in the X-Descriptors to identify this
-is a Service Binding configguration.
-
-## Mount an entire Secret as the binding Secret
+## Extract an entire Secret as the binding Secret
 
 One of the common use case is to inject all the values from a Secret resource.
 The Secret resource must be specified as an attribute in the custom resource.
@@ -59,7 +60,7 @@ Here is an example configuration:
 The X-Descriptor has `urn:alm:descriptor:io.kubernetes:Secret` entry to indicate
 the path is pointing to a Secret resource.
 
-## Mount an entire ConfigMap as the binding Secret
+## Extract an entire ConfigMap as the binding Secret
 
 Another common use case is to inject all the values from a ConfigMap resource.
 The ConfigMap resource must be specified as an attribute in the custom resource.
@@ -79,7 +80,7 @@ Here is an example configuration:
 The X-Descriptor has `urn:alm:descriptor:io.kubernetes:ConfigMap` entry to
 indicate the path is pointing to a ConfigMap resource.
 
-## Mount an entry from a ConfigMap/Secret into the binding Secret
+## Extract an entry from a ConfigMap/Secret into the binding Secret
 
 When you want to extract only a particular entry from a Secret or ConfigMap, the X-Descriptor can
 update `service.binding` line with a name and `sourceKey`.  Here is an example:
@@ -95,11 +96,12 @@ In the above example, `sourceKey` points to the name of the key in the Secret
 resource, which is `certificate`.  And `my_certificate` is the name of the
 binding key that's going to be injected.
 
-## Mount a resource definition value into the binding Secret
+## Extract a resource definition value into the binding Secret
 
-When values required for binding to the backing service are available as attributes of
-its resources, it's possible to annotate these values (which will identify them as "binding metadata"), using an
-X-Descriptors with name.  Here is an example:
+When values required for binding to the backing service are available as
+attributes of its resources, it's possible to annotate these values (which will
+identify them as "binding metadata"), using an X-Descriptors with name.  Here is
+an example:
 
 ```
 - path: data.connectionURL
@@ -110,7 +112,7 @@ X-Descriptors with name.  Here is an example:
 In the above example, the `connectionURL` attribute points to the required
 value.  It will be injected as `uri`.
 
-## Mount the entries of a collection into the binding Secret selecting the key and value from each entry
+## Extract the entries of a collection into the binding Secret selecting the key and value from each entry
 
 Consider this example from a backig service resource:
 
@@ -134,9 +136,7 @@ you can an X-Descriptors like this:
   - service.binding:endpoints:elementType=sliceOfMaps:sourceKey=type:sourceValue=url
 ```
 
-
-## Mount the items of a collection into the binding Secret with one key per item
-
+## Extract the items of a collection into the binding Secret with one key per item
 
 Consider this example from a backig service resource:
 
@@ -158,7 +158,7 @@ resource kind:
   - service.binding:tags:elementType=sliceOfStrings
 ```
 
-## Mount the values of collection entries into the binding Secret with one key per entry value
+## Extract the values of collection entries into the binding Secret with one key per entry value
 
 Consider this example:
 

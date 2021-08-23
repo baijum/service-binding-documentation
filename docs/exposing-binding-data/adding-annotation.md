@@ -4,30 +4,20 @@ sidebar_position: 4
 
 # Adding Binding Metadata as Annotations
 
-Many services, are not Provisioned Service-compliant.
-These services are still exposing the appropriate binding information, but not in the
-way that the specification and Service Binding operator expect. As a result, 
-you'll need to manually alter the backing services' custom resources and CRDs by adding annotations to create a corresponding 
-mapping with the connectivity values (and binding metadata). 
+Many services, are not Provisioned Service-compliant.  These services are still
+exposing the appropriate binding information, but not in the way that the
+specification and Service Binding operator expect. As a result, you'll need to
+manually alter the backing services' custom resources and CRDs by adding
+annotations to create a corresponding mapping with the connectivity values (and
+binding metadata).
 
-, Secret generation needs
-to support the following behaviors:
+The Service Binding will detect the annotations added to the CRDs and custom
+resources.  Then the Service Binding will create a Secret with the values
+extracted based on the annotations.  Finally the Service Binding will inject the
+values into the application.
 
-To handle the scenarios of mapping and extracting the binding metadata, Service Binding Operator
-provides the ability to extract the values from the backing service resources and CRDs, in the following way:
-
-1. Extract a string from a resource
-2. Extract an entire ConfigMap/Secret referenced from a resource
-3. Extract a specific entry from a ConfigMap/Secret referenced from a resource
-4. Extract entries from a collection of objects, mapping keys and values from
-   entries in a ConfigMap/Secret referenced from a resource
-5. Extract a collection of specific entry values in a resource's collection of
-   objects
-6. Map each value to a specific key
-7. Map each value of a collection to a key with generated name
-
-
-The annotations will need to be added under the `metadata` section to be injected by Service Binding operator into an application.  A couple of example
+The annotations will need to be added under the `metadata` section to be
+injected by Service Binding operator into an application.  A couple of example
 are given below:
 
 ```
@@ -60,35 +50,17 @@ status:
     dbConfiguration: db-conf
 ```
 
+This is the referenced ConfigMap:
 
-
-## Data Model
-
-* `path`: A template representation of the path to the element in the Kubernetes
-  resource.  The value of path is specified as JSONPath.
-
-* `elementType`: Specifies if the value of the element referenced in `path` is
-  of type `string` / `sliceOfStrings` / `sliceOfMaps`.  Defaults to `string` if
-  omitted.
-
-* `objectType`: Specifies if the value of the element indicated in `path` refers
-  to a `ConfigMap`, `Secret` or a plain string in the current namespace!
-  Defaults to `Secret` if omitted and `elementType` is a non-`string`.
-
-* `sourceKey`: Specifies the key in the ConfigMap/Secret to be added to the
-  binding Secret. When used in conjunction with `elementType`=`sliceOfMaps`,
-  `sourceKey` specifies the key in the slice of maps whose value would be used
-  as a key in the binding Secret.  This optional field can be used if the
-  operator author intends to express that only when a specific field in the
-  referenced `Secret`/`ConfigMap` is bindable.  If the `sourceKey` is not
-  specified, all values from the `Secret` or `ConfigMap` will be exposed.
-
-* `sourceValue`: Specifies the key in the slice of maps whose value would be
-  used as the value, corresponding to the value of the `sourceKey` which is
-  added as the key, in the binding Secret. Mandatory only if `elementType` is
-  `sliceOfMaps`.
-
-
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+data:
+  db_timeout: "10s"
+  username: "guest"
+```
 
 ## Expose all Secret keys as binding data
 
@@ -107,6 +79,18 @@ status:
     dbCredentials: db-cred
 ```
 
+This is the referenced Secret:
+
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-cred
+data:
+  password: "MTBz"
+  username: "Z3Vlc3Q="
+```
+
 ## Expose all ConfigMap keys as binding data
 
 ```
@@ -121,7 +105,19 @@ spec:
 
 status:
   data:
-    dbConfiguration: db-conf
+    dbConfiguration: db-config
+```
+
+This is the referenced ConfigMap:
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+data:
+  db_timeout: "10s"
+  username: "guest"
 ```
 
 ## Expose an entry from a ConfigMap as binding data
@@ -176,11 +172,11 @@ This is the referenced Secret:
 
 ```
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
   name: db-config
 data:
-  db_timeout: ""MTBz
+  password: "MTBz"
   username: "Z3Vlc3Q="
 ```
 
