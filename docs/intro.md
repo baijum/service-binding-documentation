@@ -66,5 +66,6 @@ Service Binding Operator supports the [Service Binding Specification for Kuberne
 
 [spec]: https://github.com/k8s-service-bindings/spec
 
-
-
+Note: There are two CRDs with name `ServiceBinding`.  The API group
+`service.binding` is used for the spec based CRD whereas
+`binding.operators.coreos.com` is used for the other CRD.
