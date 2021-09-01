@@ -19,8 +19,8 @@ resource.
 There are two APIs supported by the Service Binding Operator.  Both has
 `ServiceBinding` as the same name for the kind.  But the API group is different.
 
-1. binding.operators.coreos.com
-2. service.binding (API group used in the [Service Binding Spec][spec])
+1. `binding.operators.coreos.com`
+2. `service.binding` (API group used in the [Service Binding Spec][spec])
 
 Here is the example configuration with `binding.operators.coreos.com` API group:
 
