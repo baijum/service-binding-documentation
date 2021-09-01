@@ -2,66 +2,21 @@
 sidebar_position: 1
 ---
 
-# Using Injected Bindings
+# General Concept
 
-The bindings could be injected as files or enviroment variables.  By default
-bindings are injected as files.  To inject enviroment variable, set
-`.spec.bindAsFiles` value to `false` in the `ServiceBinding` resource.
-
-For determining the folder where bindings should be injected, you can specify
-the destination using `.spec.mountPath` or you can set `SERVICE_BINDING_ROOT`
-environment variable in the application resource.  If both are set then the
-`SERVICE_BINDING_ROOT` environment variable takes the higher precedence.
-
-The following table summarizes how the final bind path is computed:
-
-| .spec.mountPath | SERVICE_BINDING_ROOT  | Final Bind Path                      |
-| --------------- | --------------------- | ------------------------------------ |
-| nil             | non-existent          | /bindings/ServiceBinding_Name        |
-| nil             | /some/path/root       | /some/path/root/ServiceBinding_Name  |
-| /home/foo       | non-existent          | /home/foo                            |
-| /home/foo       | /some/path/root       | /some/path/root/ServiceBinding_Name  |
-
-You can use the built-in language feature of your programming language of choice
-to read environment variables.
-
-For accessing bindings within `SERVICE_BINDING_ROOT`, there are language or
-framework specific programs:
-
-1. Python: https://github.com/baijum/pyservicebinding
-2. Go: https://github.com/baijum/servicebinding
-3. Java/Spring: https://github.com/spring-cloud/spring-cloud-bindings
-4. Quarkus: https://quarkus.io/guides/deploying-to-kubernetes#service-binding
-5. JS/Node: https://github.com/nodeshift/kube-service-bindings
-
-Note: All these libraries expect `SERVICE_BINDING_ROOT` set.
-
-Here is example Python client usage:
-
-```
-from pyservicebinding import binding
-try:
-    sb = binding.ServiceBinding()
-except binding.ServiceBindingRootMissingError as msg:
-    # log the error message and retry/exit
-    print("SERVICE_BINDING_ROOT env var not set")
-
-sb = binding.ServiceBinding()
-
-bindings_list = sb.bindings("postgresql")
-```
-
-In the above example, the `bindings_list` contains bindings for `postgresql`
-type.  For full API, see the
-[documentation](https://github.com/baijum/pyservicebinding).
+When using Service Binding operator, you'll get a set of binding metadatas injected into your application.
+That injection can be done in two different ways:
+- As files: this is the default behavior,
+- As environment variables: if
+`.spec.bindAsFiles` is set to `false` in the  resource.
 
 ## Consuming the Bindings from Applications
 
 The Application Projection section of the spec describes how the bindings are
 projected into the application.  The primary mechanism of projection is through
 files mounted at a specific directory.  The bindings directory path can be
-discovered through `SERVICE_BINDING_ROOT` environment variable.  The operator
-must have injected `SERVICE_BINDING_ROOT` environment to all the containers
+discovered through `SERVICE_BINDING_ROOT` environment variable setup in your application.  
+The operator must have injected `SERVICE_BINDING_ROOT` environment to all the containers
 where bindings are created.
 
 Within this service binding root directory, there could be multiple bindings
@@ -120,6 +75,58 @@ particular provider based on the deployment environment.  In the deployment
 environment (`stage`, `prod`, etc.), at any given time, you need to ensure only
 one bindings projection exits for a given `type` or `type` & `provider` --
 unless your application needs to connect to all the services.
+
+## Using Binding injected as files
+
+For determining the folder where bindings are injected, you can check the 
+`.spec.mountPath` value from the `ServiceBinding` resource which specifies the destination used for the injection.
+
+Alternatively, you can also use `SERVICE_BINDING_ROOT` environment variable in the application resource.  
+If both are set then the
+`SERVICE_BINDING_ROOT` environment variable takes the higher precedence.
+
+The following table summarizes how the final bind path is computed:
+
+| .spec.mountPath | SERVICE_BINDING_ROOT  | Final Bind Path                      |
+| --------------- | --------------------- | ------------------------------------ |
+| nil             | non-existent          | /bindings/ServiceBinding_Name        |
+| nil             | /some/path/root       | /some/path/root/ServiceBinding_Name  |
+| /home/foo       | non-existent          | /home/foo                            |
+| /home/foo       | /some/path/root       | /some/path/root/ServiceBinding_Name  |
+
+You can use the built-in language feature of your programming language of choice
+to read environment variables.
+
+For accessing bindings within `SERVICE_BINDING_ROOT`, there are language or
+framework specific programs:
+
+1. Python: https://github.com/baijum/pyservicebinding
+2. Go: https://github.com/baijum/servicebinding
+3. Java/Spring: https://github.com/spring-cloud/spring-cloud-bindings
+4. Quarkus: https://quarkus.io/guides/deploying-to-kubernetes#service-binding
+5. JS/Node: https://github.com/nodeshift/kube-service-bindings
+
+Note: All these libraries expect `SERVICE_BINDING_ROOT` to be set.
+
+Here is example Python client usage:
+
+```
+from pyservicebinding import binding
+try:
+    sb = binding.ServiceBinding()
+except binding.ServiceBindingRootMissingError as msg:
+    # log the error message and retry/exit
+    print("SERVICE_BINDING_ROOT env var not set")
+
+sb = binding.ServiceBinding()
+
+bindings_list = sb.bindings("postgresql")
+```
+
+In the above example, the `bindings_list` contains bindings for `postgresql`
+type.  For full API, see the
+[documentation](https://github.com/baijum/pyservicebinding).
+
 
 ### Programming language specific library APIs
 
