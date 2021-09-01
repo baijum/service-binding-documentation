@@ -47,10 +47,25 @@ Today in Kubernetes, the exposure of secrets for connecting applications to exte
 
 ## Terminology
 
-_In this section we would highlight the main terms we are using_
+<dl>
+
+  <dt>Backing Service</dt>
+  <dd>Any software that exposes functionality.  Examples include a database, a message broker, an application with REST endpoints, an event stream, an Application Performance Monitor, or a Hardware Security Module.</dd>
+
+  <dt>Application</dt>
+  <dd>Any process, running within a container.  Examples include a Spring Boot application, a NodeJS Express application, or a Ruby Rails application.  <b>Note:</b> This is different than an umbrella application as defined by the Kubernetes SIG, which refers to a set of micro-services.</dd>
+
+  <dt>Service Binding</dt>
+  <dd>The act of or representation of the action of providing information about a Service to an Application</dd>
+
+</dl>
 
 ## Referenced Specification
 
-_In this section we provide information about the reference spec that we are following_
+Service Binding Operator supports the [Service Binding Specification for Kubernetes][spec].
 
+[spec]: https://github.com/k8s-service-bindings/spec
 
+Note: There are two CRDs with name `ServiceBinding`.  The API group
+`service.binding` is used for the spec based CRD whereas
+`binding.operators.coreos.com` is used for the other CRD.
