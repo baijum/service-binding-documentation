@@ -4,12 +4,14 @@ sidebar_position: 3
 
 # Direct Secret Reference
 
-[Direct Secret Reference][direct-secret-reference] allows to connect to a
-service by using Secret as a reference.  This is useful when there is no
-Provisioned Service available.  All the keys in the Secret resource is exposed
-as binding data.
+When a resource is not available as a Provisioned Service, but there is a
+`Secret` service resource available for binding, use the [Direct Secret
+Reference][direct-secret-reference] method.  In this method, a `ServiceBinding`
+resource directly references a `Secret` service resource to connect to a
+service.  All the keys in the `Secret` service resource are exposed as binding
+metadata.
 
-Here is an example usage:
+## Example: Specification with the binding.operators.coreos.com API
 
 ```
 apiVersion: binding.operators.coreos.com/v1alpha1
@@ -25,7 +27,7 @@ spec:
     name: production-db-secret
 ```
 
-With spec compliant API:
+## Example: Specification that is compliant with the service.binding API
 
 ```
 apiVersion: service.binding/v1alpha2

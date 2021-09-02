@@ -4,13 +4,14 @@ sidebar_position: 6
 
 # Detect Bindings through owned resources
 
-The Service Bindings operator can detect binding from resources owned by the
-service custom resource.  Service Binding operator can detect Routes, Services,
-ConfigMaps, and Secrets owned by the backing service custom resource.
-Annotation is not required to extract the binding data.
+The Service Bindings Operator can detect binding metadata from resources owned
+by the backing service custom resource such as Route, Service, ConfigMap, and
+Secret resources.
 
-This option is initiated by the setting `detectBindingResources: true` in the
-ServiceBinding custom resource:
+Set this `detectBindingResources` API option to `true` in the `ServiceBinding`
+custom resource.
+
+## Example
 
 ```
 apiVersion: binding.operators.coreos.com/v1alpha1
@@ -33,6 +34,5 @@ spec:
 
 ```
 
-When this API option is set to true, the Service Binding Operator automatically
-detects Routes, Services, ConfigMaps, and Secrets owned by the backing service
-CR and expose the binding data.
+The Service Binding Operator automatically detects the binding connections and
+exposes the binding metadata.

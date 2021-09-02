@@ -4,21 +4,22 @@ sidebar_position: 4
 
 # Adding Binding Metadata as Annotations
 
-Many services, are not Provisioned Service-compliant.  These services are still
-exposing the appropriate binding information, but not in the way that the
-specification and Service Binding operator expect. As a result, you'll need to
-manually alter the backing services' custom resources and CRDs by adding
-annotations to create a corresponding mapping with the connectivity values (and
-binding metadata).
+If your backing service is not compliant with the Service Binding specification
+as a Provisioned Service resource, you can annotate the resources of the backing
+service to expose the binding metadata with specific annotations.  Adding
+annotations under the metadata section alters the custom resources and CRDs of
+the backing services.  Using this method, you can create a corresponding mapping
+with the connectivity values and binding metadata.
 
-The Service Binding will detect the annotations added to the CRDs and custom
-resources.  Then the Service Binding will create a Secret with the values
-extracted based on the annotations.  Finally the Service Binding will inject the
+The Service Binding Operator detects the annotations added to the CRDs and
+custom resources and creates a Secret service resource with the values extracted
+based on the annotations.  The Service Binding Operator then injects these
 values into the application.
 
-The annotations will need to be added under the `metadata` section to be
-injected by Service Binding operator into an application.  A couple of example
-are given below:
+The following examples show the annotations that are added under the metadata
+section and a referenced ConfigMap object from a resource:
+
+## Example: Annotations for a Secret object
 
 ```
 apiVersion: apps.example.org/v1beta1
@@ -34,6 +35,8 @@ status:
   data:
     dbCredentials: db-cred
 ```
+
+## Example: Annotations for a ConfigMap object
 
 ```
 apiVersion: apps.example.org/v1beta1
@@ -50,7 +53,7 @@ status:
     dbConfiguration: db-conf
 ```
 
-This is the referenced ConfigMap:
+## Example: Referenced ConfigMap object from a resource
 
 ```
 apiVersion: v1
@@ -62,7 +65,11 @@ data:
   username: "guest"
 ```
 
-## Expose all Secret keys as binding data
+## Exposing an entire Secret as the binding metadata
+
+Add the required annotations for the Secret, under the metadata section.
+
+### Example 
 
 ```
 apiVersion: apps.example.org/v1beta1
@@ -79,7 +86,7 @@ status:
     dbCredentials: db-cred
 ```
 
-This is the referenced Secret:
+### Example: The referenced Secret from the backing service resource
 
 ```
 apiVersion: v1
@@ -91,7 +98,9 @@ data:
   username: "Z3Vlc3Q="
 ```
 
-## Expose all ConfigMap keys as binding data
+## Exposing an entire config map as the binding metadata
+
+Add the required annotations for the ConfigMap, under the metadata section.
 
 ```
 apiVersion: apps.example.org/v1beta1
@@ -108,7 +117,7 @@ status:
     dbConfiguration: db-config
 ```
 
-This is the referenced ConfigMap:
+### Example: The referenced ConfigMap from the backing service resource
 
 ```
 apiVersion: v1
@@ -120,7 +129,11 @@ data:
   username: "guest"
 ```
 
-## Expose an entry from a ConfigMap as binding data
+## Exposing an entry from a ConfigMap as the binding metadata
+
+Add the required annotations for the ConfigMap entry, under the `metadata` section.
+
+### Example
 
 ```
 apiVersion: apps.example.org/v1beta1
@@ -137,7 +150,9 @@ status:
     dbConfiguration: db-conf
 ```
 
-This is the referenced ConfigMap:
+### Example: The Referenced config map from the backing service resource
+
+The binding metadata should have a key with name as `timeout` and value as `10s`:
 
 ```
 apiVersion: v1
@@ -149,9 +164,11 @@ data:
   username: "guest"
 ```
 
-The biding data should have a key with name as `timeout` and value as `10s`.
+## Exposing an entry from a Secret as the binding metadata
 
-## Expose an entry from a Secret as binding data
+Adding the required annotations under the `metadata` section.
+
+### Example
 
 ```
 apiVersion: apps.example.org/v1beta1
@@ -168,7 +185,9 @@ status:
     dbConfiguration: db-conf
 ```
 
-This is the referenced Secret:
+### Example: The referenced Secret from the backing service resource
+
+The binding metadata should have a key with name as `timeout` and value as `10s`:
 
 ```
 apiVersion: v1
@@ -180,9 +199,11 @@ data:
   username: "Z3Vlc3Q="
 ```
 
-The biding data should have a key with name as `timeout` and value as `10s`.
+## Exposing a resource definition value as the binding metadata
 
-## Expose a resource definition value as binding data
+Add the required annotations under the `metadata` section.
+
+### Example
 
 ```
 apiVersion: apps.example.org/v1beta1
@@ -199,7 +220,11 @@ status:
     connectionURL: "http://guest:secret123@192.168.1.29/db"
 ```
 
-## Expose the entries of a collection as binding data selecting the key and value from each entry
+## Exposing the entries of a collection as the binding metadata by selecting the key and value from each entry
+
+Add the required annotations under the `metadata` section.
+
+### Example
 
 ```
 apiVersion: apps.example.org/v1beta1
@@ -221,7 +246,7 @@ status:
       url: black-hole.example.com
 ```
 
-The binding data files should be like this:
+### Example: Binding metadata files
 
 ```
 /bindings/<binding-name>/uri_primary => primary.example.com
@@ -229,7 +254,11 @@ The binding data files should be like this:
 /bindings/<binding-name>/uri_404 => black-hole.example.com
 ```
 
-## Expose the items of a collection as binding data with one key per item
+## Exposing the items of a collection as the binding metadata with one key per item
+
+Add the required annotations under the `metadata` section.
+
+### Example
 
 ```
 apiVersion: apps.example.org/v1beta1
@@ -246,7 +275,7 @@ spec:
       - power
 ```
 
-The binding data files should be like this:
+### Example: Binding metadata files
 
 ```
 /bindings/<binding-name>/tags_0 => knowledge
@@ -254,7 +283,11 @@ The binding data files should be like this:
 /bindings/<binding-name>/tags_2 => power
 ```
 
-## Expose the values of collection entries as binding data with one key per entry value
+## Exposing the values of collection entries as the binding metadata with one key per entry value
+
+Add the required annotations under the `metadata` section.
+
+### Example
 
 ```
 apiVersion: apps.example.org/v1beta1
@@ -273,7 +306,8 @@ spec:
       - type: '404'
         url: black-hole.example.com
 ```
-The binding data files should be like this:
+
+### Example: Binding metadata files
 
 ```
 /bindings/<binding-name>/url_primary => primary.example.com
