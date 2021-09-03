@@ -12,20 +12,17 @@ That injection can be done in two different ways:
 
 ## Consuming the Bindings from Applications
 
-The Application Projection section of the spec describes how the bindings are
-projected into the application.  The primary mechanism of projection is through
-files mounted at a specific directory.  The bindings directory path can be
-discovered through `SERVICE_BINDING_ROOT` environment variable setup in your application.  
-The operator must have injected `SERVICE_BINDING_ROOT` environment to all the containers
-where bindings are created.
+The primary mechanism of projection is through files mounted at a specific
+directory.  The bindings directory path can be discovered through
+`SERVICE_BINDING_ROOT` environment variable setup in your application.
 
 Within this service binding root directory, there could be multiple bindings
 projected from different Service Bindings.  For example, suppose an application
-requires to connect to a database and cache server. In that case, one Service
+requires to connect to a database and cache server.  In that case, one Service
 Binding can provide the database, and the other Service Binding can offer
 bindings to the cache server.
 
-Let's take a look at the example given in the spec:
+Let's take a look at the example:
 
 ```
 $SERVICE_BINDING_ROOT
@@ -61,29 +58,15 @@ collision.  However, due to the nature of the volume mount in Kubernetes, the
 bindings directory will contain values from only one of the Secret resources.
 This is a caveat of using the bindings directory name to look up the bindings.
 
-### Purpose of the type and the provider fields in the application projection
+## Using Binding metadata injected as files
 
-Service Binding specification mandates `type` field and recommends `provider`
-field in the binding Secret resource.  Normally `type` field should be good
-enough to look up the bindings.  The provider field could be used where there
-are different providers for the same Provisioned Service type.  For example, if
-the type is `mysql`, the provider value could be `mariadb`, `oracle`, `bitnami`,
-`aws-rds`, etc.  When the application is reading the binding values, if
-necessary, the application could consider `type` and `provider` as a composite
-key to avoid ambiguity.  It will be helpful if an application needs to choose a
-particular provider based on the deployment environment.  In the deployment
-environment (`stage`, `prod`, etc.), at any given time, you need to ensure only
-one bindings projection exits for a given `type` or `type` & `provider` --
-unless your application needs to connect to all the services.
-
-## Using Binding injected as files
-
-For determining the folder where bindings are injected, you can check the 
-`.spec.mountPath` value from the `ServiceBinding` resource which specifies the destination used for the injection.
+For determining the folder where bindings are injected, you can check the
+`.spec.mountPath` value from the `ServiceBinding` resource which specifies the
+destination used for the injection.
 
 Alternatively, you can also use `SERVICE_BINDING_ROOT` environment variable in the application resource.  
-If both are set then the
-`SERVICE_BINDING_ROOT` environment variable takes the higher precedence.
+If both are set then the `SERVICE_BINDING_ROOT` environment variable takes the
+higher precedence.
 
 The following table summarizes how the final bind path is computed:
 
@@ -127,39 +110,18 @@ In the above example, the `bindings_list` contains bindings for `postgresql`
 type.  For full API, see the
 [documentation](https://github.com/baijum/pyservicebinding).
 
-
-### Programming language specific library APIs
-
-The application can retrieve the bindings through the library available for your
-programming language of choice.  The language-specific APIs are encouraged to
-follow the pattern described here.  This is not an exhaustive list of APIs.
-Consult your library API documentation to confirm the behavior.
-
-The language binding API can create separate functions to retrieve bindings. For
-example, in Go:
-
-```
-Bindings(_type string) []map[string]string
-BindingsWithProvider(_type, provider string) []map[string]string
-```
-
-Languages with function overloading can use a method with different parameters
-to retrieve bindings. For example, in Java:
-
-```
-public List<Binding> filterBindings(@Nullable String type)
-public List<Binding> filterBindings(@Nullable String type, @Nullable String provider)
-```
-
-(Example taken from [Spring Cloud
-Bindings](https://github.com/spring-cloud/spring-cloud-bindings))
-
-Since the APIs are returning more than one value, depending on your application
-need, you can choose to connect to the first entry or all of them, if required.
-
 ### Environment Variables
 
 The spec also has support for projecting environment variables.  You can use the
 built-in language feature of your programming language of choice to read
 environment variables.  The container must restart to update the values of
 environment variables if there is a change in the Secret resource.
+
+Here is example Python client usage:
+
+```
+import os
+
+username = os.getenv("USERNAME")
+password = os.getenv("PASSWORD")
+```
