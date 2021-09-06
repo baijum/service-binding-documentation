@@ -18,7 +18,7 @@ The goal of this quick start guide is to:
 - Connect the application to the database with Service Binding
 
 For this quick start, we are using a PostgreSQL database and a simple
-application using the [Spring Boot REST API server][petclinic] sample.  This
+application using the [Spring Boot REST API server][petclinic] sample. This
 will allow you to understand how Service Binding Operator can be used to
 simplify the connection between a service, like a database and the application.
 
@@ -37,9 +37,9 @@ cluster.
 
 The quick start will then consist into three main steps:
 
-1. [Create a PostgreSQL database instance](#creating-a-database-instance)
-2. [Deploy the application](#deploying-the-sample-application)
-3. [Connect the application to the database with Service Binding](#connecting-the-application-to-a-backing-service)
+1. [Create a PostgreSQL database instance](#create-a-postgresql-database-instance)
+2. [Deploy the application](#deploy-the-sample-application)
+3. [Connect the application to the database with Service Binding](#connect-the-application-to-the-database)
 
 ## Prerequisites
 
@@ -53,31 +53,36 @@ In order to follow the quick start, you'll need the following tools installed an
 ## Create a PostgreSQL database instance
 
 The application is going to use to a PostgreSQL database backend which can be
-setup using the [Crunchy PostgreSQL operator from OperatorHub.io][crunchy].
+setup using the `v5` of [Crunchy PostgreSQL operator from OperatorHub.io][crunchy].
+We just need to make sure that the operator is availabe in our `my-postgresql` namespace.
 
 The installation of the operator doesn't create a database instance itself, so
 we need to create one.
 
-1. To create a database instance, you need to create custom resource `Pgcluster`
-   and that will trigger the operator reconciliation.  For convenience, run this
-   command to create `Pgcluster` custom resource:
+1. To create a database instance, you need to create custom resource `PostgresCluster`
+   and that will trigger the operator reconciliation. For convenience, run this
+   command to create `PostgresCluster` custom resource:
 
 ```bash
 kubectl apply -f https://github.com/slemeur/service-binding-documentation/raw/main/static/resources/pgcluster.yaml
 ```
 
-In this `Pgcluster` custom resource, you might notice some annotations that we
+In this `PostgresCluster` custom resource, you might notice some annotations that we
 added, those will be necessary to enable binding later into the quick start
 guide:
 
 ```
-service.binding/database: path={.spec.name}
-service.binding/host: path={.spec.name}
+proxy: hippo-pgbouncer
+type: postgresql
+service.binding/database: path={.metadata.name}
 service.binding/port: path={.spec.port}
+service.binding/username: path={.metadata.name}
+service.binding/host: path={.metadata.annotations.proxy}
+service.binding/type: path={.metadata.annotations.type}
 ```
 
-The annotions points to the values of `database`, `host`, and `post` in resource
-attributes.  For more details, refer [Exposing binding
+The annotions points to the values of `database`, `host`, `port` and `username` in resource
+attributes and metadata. The `type` is required for connectivity. For more details, refer [Exposing binding
 data](../exposing-binding-data/intro-expose-binding) section.
 
 2. Once the database is created, we need to ensure all the pods in
@@ -90,10 +95,11 @@ kubectl get pod -n my-postgresql
 You should see output something like this:
 
 ```
-NAME                                          READY   STATUS    RESTARTS   AGE
-backrest-backup-hippo-9gtqf                   1/1     Running   0          13s
-hippo-597dd64d66-4ztww                        1/1     Running   0          3m33s
-hippo-backrest-shared-repo-66ddc6cf77-sjgqp   1/1     Running   0          4m27s
+NAME                                     READY   STATUS      RESTARTS   AGE
+hippo-backup-6th6--1-28849               0/1     Completed   0          1m
+hippo-instance1-sl4r-0                   2/2     Running     0          2m
+hippo-pgbouncer-8454474bc7-lhcn9         2/2     Running     0          2m
+pgo-84b9679484-79c6m                     1/1     Running     0          3m
 ```
 
 The database has been created and is empty at this stage. We now need to set its
@@ -110,7 +116,7 @@ curl -sL https://github.com/slemeur/service-binding-documentation/raw/main/stati
 We have now finished to configured the database for the application. We are
 ready to deploy the sample application and connect it to the database.
 
-## Deploying the sample application
+## Deploy the sample application
 
 In this section, we are going to deploy the application on our kubernetes
 cluster. For that, we will use a deployment configuration and do the
@@ -149,12 +155,12 @@ Connection"}
 
 Now, we are going to see how you can use Service Binding to easily connect the application to the database.
 
-## Connecting the application to the database
+## Connect the application to the database
 
-Suppose the Service Binding operator is not present.  In that case, the
+Suppose the Service Binding operator is not present. In that case, the
 application's admin needs to extract all the configuration details and create a
 Secret resource and expose it to the application through volume mount in
-Kubernetes.  The steps would be something like this:
+Kubernetes. The steps would be something like this:
 
 1. Identify the required values for connecting the application to the database
 2. Locate the resources where the values are present
@@ -163,54 +169,85 @@ Kubernetes.  The steps would be something like this:
 5. Depending on the application requirement the values should be exposed as env var or file.
 
 In this quick start, we are going to leverage Service Binding as a way to easily
-and safely connect the application to the database service.  In order to do
+and safely connect the application to the database service. In order to do
 that, we'll need to create a Service Binding ressource which will trigger the
 Service Binding Operator to inject the binding metadatas into the application.
-
 
 1. Create the ServiceBinding custom resource to inject the bindings:
 
 The `.spec` has two sections, the first one is a list of service resources
-(`.spec.services`) and the second one is the `.spec.application`.  The services
-resources points to the database's service resources.  How the values are exposed from
+(`.spec.services`) and the second one is the `.spec.application`. The services
+resources points to the database's service resources. How the values are exposed from
 service resources are explained [Exposing binding
-data](../exposing-binding-data/intro-expose-binding) section.  In the below
+data](../exposing-binding-data/intro-expose-binding) section. In the below
 ServiceBinding resource, there are two service resources, one custom resource
-and another Secret resource.  This is required as the values required for
-database connectivity are living in these two resources.  The application
+and another Secret resource. This is required as the values required for
+database connectivity are living in these two resources. The application
 points to a `Deployment` or any similar resource with an embedded `PodSpec`.
-The mappings has extra mappings required for connectity.
 
 ```yaml
 apiVersion: binding.operators.coreos.com/v1alpha1
 kind: ServiceBinding
 metadata:
-    name: spring-petclinic-rest
-    namespace: my-postgresql
+  name: spring-petclinic-rest
+  namespace: my-postgresql
 spec:
-    services:
-    - group: "crunchydata.com"
-      version: v1
-      kind: Pgcluster
+  services:
+    - group: postgres-operator.crunchydata.com
+      version: v1beta1
+      kind: PostgresCluster
       name: hippo
     - group: ""
       version: v1
       kind: Secret
-      name: hippo-hippo-secret
-    application:
-      name: spring-petclinic-rest
-      group: apps
-      version: v1
-      resource: deployments
-    mappings:
-    - name: type
-      value: "postgresql"
+      name: hippo-pguser-hippo
+  application:
+    name: spring-petclinic-rest
+    group: apps
+    version: v1
+    resource: deployments
 ```
 
 For simplicity, you can copy/paste the following command to create the resource:
 
 ```bash
 kubectl apply -f https://github.com/slemeur/service-binding-documentation/raw/main/static/resources/service-binding.yaml
+```
+
+To check if the binding was successfull you can check the binding resource status conditions by the following command:
+
+```bash
+kubectl get servicebindings spring-petclinic-rest -n my-postgresql -o jsonpath-as-json='{.status.conditions'
+```
+
+You should see output something like:
+
+```yaml
+[
+  [
+    {
+      "lastTransitionTime": "2021-09-06T13:42:28Z",
+      "message": "",
+      "reason": "DataCollected",
+      "status": "True",
+      "type": "CollectionReady",
+    },
+    {
+      "lastTransitionTime": "2021-09-06T13:42:28Z",
+      "message": "",
+      "reason": "ApplicationUpdated",
+      "status": "True",
+      "type": "InjectionReady",
+    },
+    {
+      "lastTransitionTime": "2021-09-06T13:42:28Z",
+      "message": "",
+      "reason": "ApplicationsBound",
+      "status": "True",
+      "type": "Ready",
+    },
+  ],
+]
 ```
 
 To learn more about creating service bindings, you can find more information on
@@ -220,17 +257,37 @@ the following
 By creating this `Service Binding` resource, we now have values from the
 database's binding metadata injected into the application container as files
 (that's the default behavior, but you can also inject environment variables if
-you prefer).  If you check under `/bindings/spring-petclinic-rest` directory
-you'll see all the values from the secret resource injected there.  In the above
-example, you'll find `username` and `password`.  And the values pointed out
+you prefer). If you check under `/bindings/spring-petclinic-rest` directory
+you'll see all the values from the secret resource injected there. In the above
+example, you'll find `username` and `password`. And the values pointed out
 through the annotation are also injected which includes `database`, `host`, and
-`port`.  Finally, from the mappings, `type` is also injected.  The application
+`port`. Finally `type` is also injected which is required for connectity.. The application
 looks for `SERVICE_BINDING_ROOT` env var to find the location of `/bindings`
-directory.  The Spring Boot application used here is built using [Spring Cloud
+directory. The Spring Boot application used here is built using [Spring Cloud
 Bindings](https://github.com/spring-cloud/spring-cloud-bindings) and it looks
-for `SERVICE_BINDING_ROOT` to get the injected bindings.  See the using
+for `SERVICE_BINDING_ROOT` to get the injected bindings. See the using
 injected bindings section
 about how the values can be used from the application.
+
+To verify that binding was successfull and that the files in the application contain
+the expected content you use the following script to print out the contents:
+
+```bash
+for i in username password host port type; do
+  kubectl exec -it deploy/spring-petclinic-rest -n my-postgresql -- /bin/bash -c 'find /bindings/*/'$i' -exec echo -n {}:" " \; -exec cat {} \;';
+  echo
+done
+```
+
+You should see output something like:
+
+```
+/bindings/spring-petclinic-rest/username: hippo
+/bindings/spring-petclinic-rest/password: w0ZB<0j1W|K;+4*TlK7-w^z/
+/bindings/spring-petclinic-rest/host: hippo-pgbouncer
+/bindings/spring-petclinic-rest/port: 5432
+/bindings/spring-petclinic-rest/type: postgresql
+```
 
 2. Let's now check how the application is behaving and setup the port forwarding
    of the application port to access it from our local environment
@@ -257,14 +314,15 @@ Service Binding operator to collect the connection metadata and expose them to
 the application.
 
 By using service bindings, developers are able to more easily leverage the
-services available to them on a Kubernetes cluster.  This method provides
+services available to them on a Kubernetes cluster. This method provides
 consistency accross different services and is repeatable for the developers. By
 remove the usual manual and error prone configuration, they benefit from a
 unified way to do application-to-service linkage.
 
 You can continue to learn more about Service Binding by:
+
 - [Creating Service Bindings](../creating-service-bindings/creating-service-binding)
-- Using Injected Bindings
+- Using injected Bindings
 - [Exposing binding data](../exposing-binding-data/intro-expose-binding)
 
 [petclinic]: https://github.com/spring-petclinic/spring-petclinic-rest
