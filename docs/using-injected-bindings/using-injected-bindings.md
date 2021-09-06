@@ -42,7 +42,7 @@ $SERVICE_BINDING_ROOT
 ```
 
 In the previous example, there are two bindings under the `SERVICE_BINDING_ROOT`
-directory.  The `account-database` and `transaction-event-system` are the names
+directory.  The `account-database` and `transaction-event-stream` are the names
 of the bindings.  Files within each bindings directory has a special file named
 `type`, and you can rely on the value of that file to identify the type of the
 binding projected into that directory.  In certain directories, you can also see
