@@ -4,22 +4,23 @@ sidebar_position: 1
 
 # General Concept
 
-When using Service Binding operator, you'll get a set of binding metadatas injected into your application.
-That injection can be done in two different ways:
-- As files: this is the default behavior,
-- As environment variables: if
-`.spec.bindAsFiles` is set to `false` in the  resource.
+When using the Service Binding operator, a set of binding metadata are projected
+into your application using the following methods:
 
-## Consuming the Bindings from Applications
+- By default, as files.
+- As environment variables, if the value for the `.spec.bindAsFiles` parameter
+  is set to `false` in the `ServiceBinding` resource.
+
+## Understanding the consumption of binding metadata
 
 The primary mechanism of projection is through files mounted at a specific
 directory.  The bindings directory path can be discovered through
 `SERVICE_BINDING_ROOT` environment variable setup in your application.
 
-Within this service binding root directory, there could be multiple bindings
-projected from different Service Bindings.  For example, suppose an application
+Within this service binding root directory, there can be multiple bindings
+projected from different Service Bindings.  For example, if an application
 requires to connect to a database and cache server.  In that case, one Service
-Binding can provide the database, and the other Service Binding can offer
+Binding can provide the database, and the other Service Binding can provide
 bindings to the cache server.
 
 Let's take a look at the example:
@@ -40,7 +41,7 @@ $SERVICE_BINDING_ROOT
     └── private-key
 ```
 
-In the above example, there are two bindings under the `SERVICE_BINDING_ROOT`
+In the previous example, there are two bindings under the `SERVICE_BINDING_ROOT`
 directory.  The `account-database` and `transaction-event-system` are the names
 of the bindings.  Files within each bindings directory has a special file named
 `type`, and you can rely on the value of that file to identify the type of the
@@ -68,14 +69,16 @@ Alternatively, you can also use `SERVICE_BINDING_ROOT` environment variable in t
 If both are set then the `SERVICE_BINDING_ROOT` environment variable takes the
 higher precedence.
 
+### Table: Summary of the final path computation
+
 The following table summarizes how the final bind path is computed:
 
-| .spec.mountPath | SERVICE_BINDING_ROOT  | Final Bind Path                      |
-| --------------- | --------------------- | ------------------------------------ |
-| nil             | non-existent          | /bindings/ServiceBinding_Name        |
-| nil             | /some/path/root       | /some/path/root/ServiceBinding_Name  |
-| /home/foo       | non-existent          | /home/foo                            |
-| /home/foo       | /some/path/root       | /some/path/root/ServiceBinding_Name  |
+| .spec.mountPath | SERVICE_BINDING_ROOT  | Final Path                            |
+| --------------- | --------------------- | --------------------------------------|
+| nil             | non-existent          | /bindings/ServiceBinding_Name         |
+| nil             | /some/path/root       | /some/path/root/<ServiceBinding_Name> |
+| /home/foo       | non-existent          | /home/foo                             |
+| /home/foo       | /some/path/root       | /some/path/root/<ServiceBinding_Name> |
 
 You can use the built-in language feature of your programming language of choice
 to read environment variables.
