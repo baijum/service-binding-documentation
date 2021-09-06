@@ -1,65 +1,53 @@
-apiVersion: crunchydata.com/v1
-kind: Pgcluster
+---
+apiVersion: v1
+kind: Namespace
 metadata:
-  annotations:
-    current-primary: hippo
-    service.binding/database: path={.spec.name}
-    service.binding/host: path={.spec.name}
-    service.binding/port: path={.spec.port}
-  labels:
-    crunchy-pgha-scope: hippo
-    deployment-name: hippo
-    name: hippo
-    pg-cluster: hippo
-    pgo-version: 4.7.0
-    pgouser: admin
+  name: my-postgresql
+---
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
   name: hippo
   namespace: my-postgresql
+  annotations:
+    proxy: hippo-pgbouncer
+    type: postgresql
+    service.binding/database: path={.metadata.name}
+    service.binding/port: path={.spec.port}
+    service.binding/username: path={.metadata.name}
+    service.binding/host: path={.metadata.annotations.proxy}
+    service.binding/type: path={.metadata.annotations.type}
 spec:
-  BackrestStorage:
-    accessmode: ReadWriteMany
-    matchLabels: ""
-    name: ""
-    size: 1G
-    storageclass: ""
-    storagetype: create
-    supplementalgroups: ""
-  PrimaryStorage:
-    accessmode: ReadWriteMany
-    matchLabels: ""
-    name: hippo
-    size: 1G
-    storageclass: ""
-    storagetype: create
-    supplementalgroups: ""
-  ReplicaStorage:
-    accessmode: ReadWriteMany
-    matchLabels: ""
-    name: ""
-    size: 1G
-    storageclass: ""
-    storagetype: create
-    supplementalgroups: ""
-  annotations: {}
-  ccpimage: crunchy-postgres-ha
-  ccpimageprefix: "registry.developers.crunchydata.com/crunchydata"
-  ccpimagetag: centos8-13.3-4.7.0
-  clustername: hippo
-  database: hippo
-  exporterport: "9187"
-  limits: {}
-  name: hippo
-  pgDataSource:
-    restoreFrom: ""
-    restoreOpts: ""
-  pgbadgerport: "10000"
-  pgoimageprefix: "registry.developers.crunchydata.com/crunchydata"
-  podAntiAffinity:
-    default: preferred
-    pgBackRest: preferred
-    pgBouncer: preferred
-  port: "5432"
-  tolerations: []
-  user: hippo
-  userlabels:
-    pgo-version: 4.7.0
+  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres-ha:centos8-13.4-0
+  postgresVersion: 13
+  instances:
+    - name: instance1
+      dataVolumeClaimSpec:
+        accessModes:
+        - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: 1Gi
+  backups:
+    pgbackrest:
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:centos8-2.33-2
+      repos:
+      - name: repo1
+        volume:
+          volumeClaimSpec:
+            accessModes:
+            - "ReadWriteOnce"
+            resources:
+              requests:
+                storage: 1Gi
+      - name: repo2
+        volume:
+          volumeClaimSpec:
+            accessModes:
+            - "ReadWriteOnce"
+            resources:
+              requests:
+                storage: 1Gi
+  proxy:
+    pgBouncer:
+        image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:centos8-1.15-2

@@ -5,19 +5,16 @@ metadata:
     namespace: my-postgresql
 spec:
     services:
-    - group: "crunchydata.com"
-      version: v1
-      kind: Pgcluster
+    - group: postgres-operator.crunchydata.com
+      version: v1beta1
+      kind: PostgresCluster
       name: hippo
     - group: ""
       version: v1
       kind: Secret
-      name: hippo-hippo-secret
+      name: hippo-pguser-hippo
     application:
       name: spring-petclinic-rest
       group: apps
       version: v1
       resource: deployments
-    mappings:
-    - name: type
-      value: "postgresql"
