@@ -56,6 +56,14 @@ The application is going to use to a PostgreSQL database backend which can be
 setup using the `v5` of [Crunchy PostgreSQL operator from OperatorHub.io][crunchy].
 We just need to make sure that the operator is availabe in our `my-postgresql` namespace.
 
+Additionally, we need to allow the Service Binding Operator to `read`, `watch` and `list` Crunchy PostgreSQL operator's
+custom resources by creating appropriate `ClusterRole` and `ClusterRoleBinding` resources. You can do it by
+running the following command:
+
+```bash
+curl -sL https://github.com/slemeur/service-binding-documentation/raw/main/static/resources/setup-pg-sbo-rbac.sh | bash
+```
+
 The installation of the operator doesn't create a database instance itself, so
 we need to create one.
 
@@ -217,7 +225,7 @@ kubectl apply -f https://github.com/slemeur/service-binding-documentation/raw/ma
 To check if the binding was successfull you can check the binding resource status conditions by the following command:
 
 ```bash
-kubectl get servicebindings spring-petclinic-rest -n my-postgresql -o jsonpath-as-json='{.status.conditions'
+kubectl get servicebindings spring-petclinic-rest -n my-postgresql -o jsonpath-as-json='{.status.conditions}'
 ```
 
 You should see output something like:
