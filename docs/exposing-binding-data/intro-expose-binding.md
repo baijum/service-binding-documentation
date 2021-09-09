@@ -48,9 +48,13 @@ and expose the binding metadata:
 - Expose a collection of specific entry values in a resource's collection of
   objects
 - Map each value to a specific key
-- Map each value of a collection to a key with generated name
+- Map each value of a collection to a key with a generated name
 
 ## Data Model
+
+This section explains the data model used in the annotation and OLM descripors.
+The data model is same for CRD or CR annotations and OLM descriptors, but the
+syntax is different, which is explained in the respective sections.
 
 * `path`: A template representation of the path to the element in the Kubernetes
   resource.  The value of `path` is specified as JSONPath.
@@ -77,9 +81,6 @@ and expose the binding metadata:
   used as the value, corresponding to the value of the `sourceKey` that is added
   as the key, in the binding Secret.  Mandatory only if `elementType` is
   `sliceOfMaps`.
-
-The data model is same for CRD or CR annotations and OLM descriptors, but the
-syntax is different, which is explained in the respective sections.
 
 [provisioned-service]: https://github.com/k8s-service-bindings/spec#provisioned-service
 [direct-secret-reference]: https://github.com/k8s-service-bindings/spec#direct-secret-reference
