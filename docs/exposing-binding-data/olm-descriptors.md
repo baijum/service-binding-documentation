@@ -29,16 +29,17 @@ If the path is pointing to a `Secret` resource, there should be an X-Descriptors
 
     urn:alm:descriptor:io.kubernetes:Secret
 
-Similary, if the path is pointing to a `ConfigMap` resource, there should be an
+Similary, if the path is pointing to a `ConfigMap** resource, there should be an
 X-Descriptors defined like this:
 
     urn:alm:descriptor:io.kubernetes:ConfigMap
 
-There should be a `service.binding` entry in the X-Descriptors to identify that
-this is a Service Binding configuration.
+**Note:**
 
-If the `Secret` or `ConfigMap` specific X-Descriptors are not present, that
-descriptor is referencing the value at the given path.
+- You must have a `service.binding` entry in the X-Descriptors to identify that
+  it is a configuration for service binding.
+- Absence of the `Secret` or `ConfigMap` specific X-Descriptors indicates that
+  the descriptor is referencing the binding metadata value at the given path.
 
 ## Exposing an entire Secret as the binding Secret
 
