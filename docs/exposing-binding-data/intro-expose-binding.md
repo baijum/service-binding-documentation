@@ -25,7 +25,7 @@ Binding metadata is exposed for the following scenarios:
   resource: You must expose the binding metadata from the backing service.  You
   can expose the binding metadata using any of the following methods:
   * **[Direct Secret Reference][direct-secret-reference]**: When all the
-    required binding values are available in a `Secret` that you can refenrence
+    required binding values are available in a `Secret` that you can reference
     in your Service Binding definition.
   * **Generate Secret through CRD or CR annotations**: When you can annotate the
     resources of the backing service, to expose the binding metadata with
