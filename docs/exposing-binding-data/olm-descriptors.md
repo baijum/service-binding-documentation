@@ -25,14 +25,21 @@ is a dot-delimited path of the field on the object that the descriptor
 describes. The **X-Descriptors** defines the binding meta-data similar to CR/CRD
 annotation.
 
-If the path is pointing to a `Secret` resource, there should be an X-Descriptors defined like this:
+The following examples show how to define an X-Descriptor depending on the
+resource to which you point the path:
 
-    urn:alm:descriptor:io.kubernetes:Secret
+## Example: X-Descriptor definition for the path pointing to a Secret service resource
+
+```
+urn:alm:descriptor:io.kubernetes:Secret
+```
 
 Similary, if the path is pointing to a `ConfigMap** resource, there should be an
 X-Descriptors defined like this:
 
-    urn:alm:descriptor:io.kubernetes:ConfigMap
+```
+urn:alm:descriptor:io.kubernetes:ConfigMap
+```
 
 **Note:**
 
