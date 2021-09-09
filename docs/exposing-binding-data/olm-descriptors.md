@@ -8,7 +8,7 @@ Use this method if your Operator is distributed as an [Operator
 Bundle](https://github.com/operator-framework/operator-registry/blob/master/docs/design/operator-bundle.md).
 You can add [OLM
 descriptors](https://github.com/openshift/console/blob/master/frontend/packages/operator-lifecycle-manager/src/components/descriptors/reference/reference.md)
-to describe about the binding metadata are that is to be exposed.  The OLM
+to describe the binding metadata that is to be exposed.  The OLM
 descriptors are part of [Cluster Service
 Version](https://docs.openshift.com/container-platform/4.7/operators/operator_sdk/osdk-generating-csvs.html)
 files.  You can expose the binding data by using `specDescriptors` array and
@@ -35,6 +35,7 @@ X-Descriptors defined like this:
     urn:alm:descriptor:io.kubernetes:ConfigMap
 
 **Note:**
+
 
 - You must have a `service.binding` entry in the X-Descriptors to identify that
   it is a configuration for service binding.
