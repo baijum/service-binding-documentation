@@ -48,9 +48,9 @@ of the bindings.  Files within each bindings directory has a special file named
 binding projected into that directory.  In certain directories, you can also see
 another file named `provider`.  The provider is an additional identifier to
 narrow down the type further.  Retrieving the bindings through the bindings
-directory name is not a practice -- it makes your application less portable.
-Always use the `type` field and, if necessary, `provider` to look up the
-bindings.
+directory name is not a good practice -- it makes your application less
+portable.  Always use the `type` field and, if necessary, `provider` to look up
+the bindings.
 
 Usually, operators use `ServiceBinding` resource name (`.metadata.name`) as the
 bindings directory name, but the spec also provides a way to override that name
