@@ -20,10 +20,11 @@ The Service Binding Operator detects the OLM descriptors.  Then the Service
 Binding will create a Secret with the values extracted based on the same.
 Finally the Service Binding will project the values into the application.
 
-The only two fields used for binding are `Path` and `X-Descriptors`.  **Path**
-is a dot-delimited path of the field on the object that the descriptor
-describes. The **X-Descriptors** defines the binding meta-data similar to CR/CRD
-annotation.
+Following are the only two fields that are used for binding the metadata:
+
+- Path: A dot-delimited path of the field on the object as described by the
+  descriptor.
+- X-Descriptors: Defines the binding metadata.
 
 The following examples show how to define an X-Descriptor depending on the
 resource to which you point the path:
