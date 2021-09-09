@@ -36,16 +36,16 @@ Binding metadata is exposed for the following scenarios:
     service owns Kubernetes resources such as `Service`, `Route`, `ConfigMap` or
     `Secret` that you can use to detect the binding metadata.
 
-Service Binding Operator provides the ability to extract the values from the
+Service Binding Operator provides the ability to expose the values from the
 backing service resources and CRDs.  You can use the following methods to map
-and extract the binding metadata:
+and expose the binding metadata:
 
-- Extract a string from a resource
-- Extract an entire ConfigMap or Secret that is referenced from a resource
-- Extract a specific entry from a ConfigMap or Secret that is referenced from a resource
-- Extract entries from a collection of objects, mapping keys and values from
+- Expose a string from a resource
+- Expose an entire ConfigMap or Secret that is referenced from a resource
+- Expose a specific entry from a ConfigMap or Secret that is referenced from a resource
+- Expose entries from a collection of objects, mapping keys and values from
   entries in a ConfigMap or Secret that is referenced from a resource
-- Extract a collection of specific entry values in a resource's collection of
+- Expose a collection of specific entry values in a resource's collection of
   objects
 - Map each value to a specific key
 - Map each value of a collection to a key with generated name
