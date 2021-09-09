@@ -90,6 +90,6 @@ spec:
 ```
 
 All the keys in the `Secret` resource are exposed as binding metadata and
-injected into the application.
+projected into the application.
 
 [provisioned-service]: https://github.com/k8s-service-bindings/spec#provisioned-service

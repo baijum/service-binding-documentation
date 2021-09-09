@@ -13,7 +13,7 @@ with the connectivity values and binding metadata.
 
 The Service Binding Operator detects the annotations added to the CRDs and
 custom resources and creates a Secret service resource with the values extracted
-based on the annotations.  The Service Binding Operator then injects these
+based on the annotations.  The Service Binding Operator then projects these
 values into the application.
 
 The following examples show the annotations that are added under the metadata

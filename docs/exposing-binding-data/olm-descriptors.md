@@ -18,7 +18,7 @@ path under the `.status` section of a custom resource.
 
 The Service Binding Operator detects the OLM descriptors.  Then the Service
 Binding will create a Secret with the values extracted based on the same.
-Finally the Service Binding will inject the values into the application.
+Finally the Service Binding will project the values into the application.
 
 The only two fields used for binding are `Path` and `X-Descriptors`.  **Path**
 is a dot-delimited path of the field on the object that the descriptor
@@ -42,7 +42,7 @@ descriptor is referencing the value at the given path.
 
 ## Exposing an entire Secret as the binding Secret
 
-If you are injecting all the values from a `Secret` service resource, you must
+If you are projecting all the values from a `Secret` service resource, you must
 specify it as an attribute in the backing service custom resource. For example,
 if the attribute is part of the `.spec` section, you can create and use a
 `specDescriptors` array. Or, if the attribute is part of the `.status` section,
@@ -62,7 +62,7 @@ you can create and use a `statusDescriptors` array.
 
 ## Exposing an entire ConfigMap as the binding Secret
 
-If you are injecting all the values from a `ConfigMap` service resource, you
+If you are projecting all the values from a `ConfigMap` service resource, you
 must specify it as an attribute in the backing service custom resource. For
 example, if the attribute is part of the `.spec` section, you can create and use
 a `specDescriptors` array. Or, if the attribute is part of the `.status`
@@ -85,7 +85,7 @@ section, you can create and use a `statusDescriptors` array.
 1. Using the `path` attribute, update `X-Descriptors` for `service.binding` and
    `sourceKey` by providing the following information:
 
-- name of the binding key that is to be injected
+- name of the binding key that is to be projected
 - name of the key in the Secret service resource
 
 ### Example: Configuration with a urn:alm:descriptor:io.kubernetes:ConfigMap entry
@@ -99,14 +99,14 @@ section, you can create and use a `statusDescriptors` array.
 
 In the previous example, `sourceKey` points to the name of the key in the Secret
 resource, which is `certificate`.  And `my_certificate` is the name of the
-binding key that is going to be injected.
+binding key that is going to be projected.
 
 ## Exposing an entry from a Secret into the binding Secret
 
 1. Using the `path` attribute, update `X-Descriptors` for `service.binding` and
    `sourceKey` by providing the following information:
 
-- name of the binding key that is to be injected
+- name of the binding key that is to be projected
 - name of the key in the Secret service resource
 
 ### Example: Configuration with a urn:alm:descriptor:io.kubernetes:Secret entry
@@ -120,7 +120,7 @@ binding key that is going to be injected.
 
 In the previous example, `sourceKey` points to the name of the key in the Secret
 resource, which is `certificate`.  And `my_certificate` is the name of the
-binding key that is going to be injected.
+binding key that is going to be projected.
 
 ## Exposing a resource definition value into the binding Secret
 
@@ -142,7 +142,7 @@ attributes of its resources, you can annotate these values, using
 ```
 
 In the previous example, the `connectionURL` attribute points to the required
-value that is to be injected as `uri`.
+value that is to be projected as `uri`.
 
 ## Exposing the entries of a collection into the binding Secret selecting the key and value from each entry
 
@@ -163,7 +163,7 @@ status:
       url: black-hole.example.com
 ```
 
-The previous example helps you to inject all those values with key such as `primary`,
+The previous example helps you to project all those values with key such as `primary`,
 `secondary`, and so on.
 
 ### Example: Configuration for the required entries of a collection
@@ -191,7 +191,7 @@ spec:
       - power
 ```
 
-The previous example helps you inject all those values with key such as
+The previous example helps you project all those values with key such as
 `prefix_0`, `prefix_1`, and so on.  The default prefix is the name of the
 resource kind:
 
@@ -222,7 +222,7 @@ spec:
         url: black-hole.example.com
 ```
 
-The previous example helps you inject all those values with key such as
+The previous example helps you project all those values with key such as
 `prefix_0`, `prefix_1`, and so on.  The default prefix is the name of the
 resource kind:
 
