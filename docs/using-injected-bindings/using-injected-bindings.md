@@ -52,12 +52,13 @@ directory name is not a good practice -- it makes your application less
 portable.  Always use the `type` field and, if necessary, `provider` to look up
 the bindings.
 
-Usually, operators use `ServiceBinding` resource name (`.metadata.name`) as the
-bindings directory name, but the spec also provides a way to override that name
-through the `.spec.name` field. So, there is a chance for bindings name
-collision.  However, due to the nature of the volume mount in Kubernetes, the
-bindings directory will contain values from only one of the Secret resources.
-This is a caveat of using the bindings directory name to look up the bindings.
+The Service Binding Operators uses `ServiceBinding` resource name
+(`.metadata.name`) as the bindings directory name, but the spec also provides a
+way to override that name through the `.spec.name` field. So, there is a chance
+for bindings name collision.  However, due to the nature of the volume mount in
+Kubernetes, the bindings directory will contain values from only one of the
+Secret resources.  This is a caveat of using the bindings directory name to look
+up the bindings.
 
 ## Using Binding metadata injected as files
 
@@ -65,9 +66,9 @@ For determining the folder where bindings are injected, you can check the
 `.spec.mountPath` value from the `ServiceBinding` resource which specifies the
 destination used for the injection.
 
-Alternatively, you can also use `SERVICE_BINDING_ROOT` environment variable in the application resource.  
-If both are set then the `SERVICE_BINDING_ROOT` environment variable takes the
-higher precedence.
+Alternatively, you can also check `SERVICE_BINDING_ROOT` environment variable in
+the application resource.  If both are set then the `SERVICE_BINDING_ROOT`
+environment variable takes the higher precedence.
 
 ### Table: Summary of the final path computation
 
@@ -94,7 +95,7 @@ framework specific programs:
 
 Note: All these libraries expect `SERVICE_BINDING_ROOT` to be set.
 
-Here is example Python client usage:
+### Example: Python client usage
 
 ```
 from pyservicebinding import binding
@@ -109,8 +110,8 @@ sb = binding.ServiceBinding()
 bindings_list = sb.bindings("postgresql")
 ```
 
-In the above example, the `bindings_list` contains bindings for `postgresql`
-type.  For full API, see the
+In the previous example, the `bindings_list` parameter contains the binding
+metadata for the `postgresql` type.  For full API, see the
 [documentation](https://github.com/baijum/pyservicebinding).
 
 ### Environment Variables
